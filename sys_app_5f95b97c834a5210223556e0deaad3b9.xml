@@ -21,10 +21,10 @@
 <private>false</private>
 <restrict_table_access>false</restrict_table_access>
 <runtime_access_tracking>permissive</runtime_access_tracking>
-<scope>x_165838_neuronow</scope>
+<scope>x_neuronow</scope>
 <scoped_administration>false</scoped_administration>
 <short_description>AI-driven chat assistant for seamless ServiceNow record interactions.</short_description>
-<source>x_165838_neuronow</source>
+<source>x_neuronow</source>
 <store_correlation_id/>
 <store_url/>
 <subscription_entitlement display_value=""/>

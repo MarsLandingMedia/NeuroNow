@@ -269,6 +269,7 @@ div.card-panel{
 }
 
 #chat-input {
+  margin-top: 15px;
   font-size: large;
   color:#bbdefb !important;
 }
@@ -340,6 +341,9 @@ code[class*="language-"], pre[class*="language-"] {
 	var currentUserDetails = getCurrentUserDetails();
 
   data.agentName = gs.getProperty('x_neuronow.gpt.openai.agent.name');
+	data.portalTitle = gs.getProperty('x_neuronow.gpt.portal.title');
+	data.chatInputPlaceHolder = gs.getProperty('x_neuronow.gpt.chat.input.placeholder');
+	
 	
 	var currUserSysId = currentUserDetails.sysID;
 	data.userName = currentUserDetails.firstName;
@@ -372,13 +376,23 @@ code[class*="language-"], pre[class*="language-"] {
 
 
 	function getCurrentUserDetails() {
-		var user = gs.getUser();
+		
+		//scoped app method of getting current user data
+		var userSysId = gs.getUserID();
+		
+		var user = new GlideRecord('sys_user');
+		user.get(userSysId);
+		var userId = user.user_name.toString();
+		var userFirstName = user.first_name.toString();
+		var userLastName = user.last_name.toString();
+		var userFullName = userFirstName + ' ' + userLastName;
+		
 		var userDetails = {
-			userID: user.getUserName(),   // Get the user ID (username)
-			fullName: user.getFullName(), // Get the full name
-			firstName: user.getFirstName(), // Get the first name
-			lastName: user.getLastName(),   // Get the last name
-			sysID: user.getID()            // Get the unique identifier (sys_id)
+			userID: userId,   // Get the user ID (username)
+			fullName: userFullName, // Get the full name
+			firstName: userFirstName, // Get the first name
+			lastName: userLastName,   // Get the last name
+			sysID: userSysId // Get the unique identifier (sys_id)
 		};
 
 		return userDetails;
@@ -394,17 +408,17 @@ code[class*="language-"], pre[class*="language-"] {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2024-11-22 01:41:54</sys_created_on>
         <sys_id>4c3a6e4583ced2104af4f065eeaad3c7</sys_id>
-        <sys_mod_count>5</sys_mod_count>
+        <sys_mod_count>11</sys_mod_count>
         <sys_name>GPT Module</sys_name>
         <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
         <sys_policy/>
         <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
         <sys_update_name>sp_widget_4c3a6e4583ced2104af4f065eeaad3c7</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-22 02:04:02</sys_updated_on>
+        <sys_updated_on>2024-11-22 03:07:43</sys_updated_on>
         <template><![CDATA[<div class="widget-example chatgpt-widget">
 
-  <h3 class="widget-title">JD's GPT Test</h3>
+  <h3 class="widget-title">{{data.portalTitle}}</h3>
 
   <!-- Response Panel -->
   <div  id="response-feed" class="response-panel row chat-focus-column" ng-for="c.responseText && c.responseText.length > 0">
@@ -424,9 +438,9 @@ code[class*="language-"], pre[class*="language-"] {
   <div class="row chat-focus-column">
     <form class="col m12">
       <div class="row">
-        <div class="chat-input-group input-field col s11">
+        <div class="chat-input-group input-field col s11">          
+          <label for="chat-input" id="chat-input-text" class="grey-text text-lighten-2">{{data.chatInputPlaceHolder}}</label>
           <textarea id="chat-input" class="materialize-textarea" ng-model="c.userInput"></textarea>
-          <label for="chat-input" id="chat-input-text" class="grey-text text-lighten-2">GPT Message</label>
         </div>
         <div class="col s1">
           <button id="chat-submit" class="btn pulse waves-effect waves-light btn-small" type="submit" name="action" ng-click="c.createThread()">

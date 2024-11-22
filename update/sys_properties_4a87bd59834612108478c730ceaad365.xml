@@ -11,16 +11,19 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2024-11-22 16:39:18</sys_created_on>
         <sys_id>4a87bd59834612108478c730ceaad365</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_name>x_neuronow.gpt.openai.api.key</sys_name>
         <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
         <sys_policy/>
         <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
         <sys_update_name>sys_properties_4a87bd59834612108478c730ceaad365</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-22 16:39:18</sys_updated_on>
+        <sys_updated_on>2024-11-22 17:00:42</sys_updated_on>
         <type>password</type>
-        <value/>
+        <value>{{dflt-gpaes}}wKsylZccYH7MveBWJzN3Uam/81T/rN/sbJrQPTTRo6iXSwl+dqlAGf0Zjv04gZUbFs8pXmQkopCf&#13;
+aM0TNITx8aUaeirfGBlKHsXgGOWHd5vvlY/RcLW2+zrRqXxfEXM08n3N+T5j03z62HQdVb6GLIq5&#13;
++usAtlGuzq9e6yImxF58J8UlfDv64oSGbZ7ukeR0IAOrn185tW2q+u4miMJJoi8HUzia/cX9Hq+D&#13;
+QxFz0E0=</value>
         <write_roles/>
     </sys_properties>
     <sys_translated_text action="delete_multiple" query="documentkey=4a87bd59834612108478c730ceaad365"/>

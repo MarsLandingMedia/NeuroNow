@@ -16,7 +16,7 @@
         <column_label>Number</column_label>
         <comments/>
         <create_roles/>
-        <default_value/>
+        <default_value>javascript:global.getNextObjNumberPadded();</default_value>
         <defaultsort/>
         <delete_roles/>
         <dependent/>
@@ -58,7 +58,7 @@
         <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
         <sys_update_name>sys_dictionary_x_neuronow_openai_conversation_message_number</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-22 00:46:07</sys_updated_on>
+        <sys_updated_on>2024-11-22 17:25:47</sys_updated_on>
         <table_reference>false</table_reference>
         <text_index>false</text_index>
         <unique>false</unique>

@@ -6,14 +6,14 @@
         <caller_access/>
         <client_scripts_access>false</client_scripts_access>
         <configuration_access>false</configuration_access>
-        <create_access>false</create_access>
+        <create_access>true</create_access>
         <create_access_controls>true</create_access_controls>
-        <delete_access>false</delete_access>
-        <is_extendable>false</is_extendable>
-        <label>Openai Conversation Message</label>
+        <delete_access>true</delete_access>
+        <is_extendable>true</is_extendable>
+        <label>OpenAI Conversation Message</label>
         <live_feed_enabled>false</live_feed_enabled>
         <name>x_neuronow_openai_conversation_message</name>
-        <number_ref/>
+        <number_ref display_value="OACM">428406118342121084701630ceaad37d</number_ref>
         <provider_class/>
         <read_access>true</read_access>
         <scriptable_table>false</scriptable_table>
@@ -22,15 +22,15 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2024-11-22 00:40:18</sys_created_on>
         <sys_id>2c0c5ec1838ed2104af4f065eeaad3c5</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>2</sys_mod_count>
         <sys_name>OpenAI Conversation Message</sys_name>
         <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
         <sys_policy/>
         <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
         <sys_update_name>sys_db_object_2c0c5ec1838ed2104af4f065eeaad3c5</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-22 00:40:18</sys_updated_on>
-        <update_access>false</update_access>
+        <sys_updated_on>2024-11-22 17:35:52</sys_updated_on>
+        <update_access>true</update_access>
         <user_role display_value="x_neuronow.openai_conversation_message_user" name="x_neuronow.openai_conversation_message_user">7d1c56c1838ed2104af4f065eeaad30f</user_role>
         <ws_access>true</ws_access>
     </sys_db_object>

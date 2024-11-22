@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element db_object_id="c1cb5a05838ed2104af4f065eeaad3f0" label="OpenAI Conversation" max_length="40" name="x_neuronow_openai_conversation" type="collection">
+        <element label="Assistant ID" max_length="100" name="assistant_id" type="string"/>
+        <element label="User" max_length="32" name="user" reference="sys_user" reference_qual="active=true^EQ" reference_qual_condition="active=true^EQ" type="reference"/>
+        <element label="Number" max_length="40" name="number" type="string"/>
+        <index name="index">
+            <element name="user"/>
+        </index>
+    </element>
+</database>

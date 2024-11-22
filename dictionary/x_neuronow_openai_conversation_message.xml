@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element db_object_id="2c0c5ec1838ed2104af4f065eeaad3c5" label="OpenAI Conversation Message" max_length="40" name="x_neuronow_openai_conversation_message" type="collection">
+        <element label="Thread ID" max_length="100" name="thread_id" type="string"/>
+        <element label="Message" max_length="30000" name="message" type="string"/>
+        <element choice="1" label="Role" max_length="40" name="role" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="user" sequence="200" value="user"/>
+                <element inactive_on_update="false" label="assistant" sequence="100" value="assistant"/>
+            </choice>
+        </element>
+        <element label="Assistant ID" max_length="100" name="assistant_id" type="string"/>
+        <element label="Conversation ID" max_length="32" name="conversation_id" reference="x_neuronow_openai_conversation" type="reference"/>
+        <element label="Number" max_length="40" name="number" type="string"/>
+        <index name="index">
+            <element name="conversation_id"/>
+        </index>
+    </element>
+</database>

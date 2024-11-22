@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="m2m_sp_theme_css_include">
+    <m2m_sp_theme_css_include action="INSERT_OR_UPDATE">
+        <order/>
+        <sp_css_include display_value="gptMain">1161fcc58386d2104af4f065eeaad3b1</sp_css_include>
+        <sp_theme display_value="gpt_ui">cab95281838ed2104af4f065eeaad3bb</sp_theme>
+        <sys_class_name>m2m_sp_theme_css_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2024-11-22 00:33:55</sys_created_on>
+        <sys_id>98aad2c1838ed2104af4f065eeaad38c</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>gptMain.gpt_ui</sys_name>
+        <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
+        <sys_update_name>m2m_sp_theme_css_include_98aad2c1838ed2104af4f065eeaad38c</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2024-11-22 00:34:19</sys_updated_on>
+    </m2m_sp_theme_css_include>
+</record_update>

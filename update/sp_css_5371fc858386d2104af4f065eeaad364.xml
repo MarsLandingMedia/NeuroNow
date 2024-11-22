@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_css">
+    <sp_css action="INSERT_OR_UPDATE">
+        <css>(function () {&#13;
+&#13;
+	if (typeof Prism === 'undefined' || typeof document === 'undefined') {&#13;
+		return;&#13;
+	}&#13;
+&#13;
+	if (!Prism.plugins.toolbar) {&#13;
+		console.warn('Copy to Clipboard plugin loaded before Toolbar plugin.');&#13;
+&#13;
+		return;&#13;
+	}&#13;
+&#13;
+	/**&#13;
+	 * When the given elements is clicked by the user, the given text will be copied to clipboard.&#13;
+	 *&#13;
+	 * @param {HTMLElement} element&#13;
+	 * @param {CopyInfo} copyInfo&#13;
+	 *&#13;
+	 * @typedef CopyInfo&#13;
+	 * @property {() =&gt; string} getText&#13;
+	 * @property {() =&gt; void} success&#13;
+	 * @property {(reason: unknown) =&gt; void} error&#13;
+	 */&#13;
+	function registerClipboard(element, copyInfo) {&#13;
+		element.addEventListener('click', function () {&#13;
+			copyTextToClipboard(copyInfo);&#13;
+		});&#13;
+	}&#13;
+&#13;
+	// https://stackoverflow.com/a/30810322/7595472&#13;
+&#13;
+	/** @param {CopyInfo} copyInfo */&#13;
+	function fallbackCopyTextToClipboard(copyInfo) {&#13;
+		var textArea = document.createElement('textarea');&#13;
+		textArea.value = copyInfo.getText();&#13;
+&#13;
+		// Avoid scrolling to bottom&#13;
+		textArea.style.top = '0';&#13;
+		textArea.style.left = '0';&#13;
+		textArea.style.position = 'fixed';&#13;
+&#13;
+		document.body.appendChild(textArea);&#13;
+		textArea.focus();&#13;
+		textArea.select();&#13;
+&#13;
+		try {&#13;
+			var successful = document.execCommand('copy');&#13;
+			setTimeout(function () {&#13;
+				if (successful) {&#13;
+					copyInfo.success();&#13;
+				} else {&#13;
+					copyInfo.error();&#13;
+				}&#13;
+			}, 1);&#13;
+		} catch (err) {&#13;
+			setTimeout(function () {&#13;
+				copyInfo.error(err);&#13;
+			}, 1);&#13;
+		}&#13;
+&#13;
+		document.body.removeChild(textArea);&#13;
+	}&#13;
+	/** @param {CopyInfo} copyInfo */&#13;
+	function copyTextToClipboard(copyInfo) {&#13;
+		if (navigator.clipboard) {&#13;
+			navigator.clipboard.writeText(copyInfo.getText()).then(copyInfo.success, function () {&#13;
+				// try the fallback in case `writeText` didn't work&#13;
+				fallbackCopyTextToClipboard(copyInfo);&#13;
+			});&#13;
+		} else {&#13;
+			fallbackCopyTextToClipboard(copyInfo);&#13;
+		}&#13;
+	}&#13;
+&#13;
+	/**&#13;
+	 * Selects the text content of the given element.&#13;
+	 *&#13;
+	 * @param {Element} element&#13;
+	 */&#13;
+	function selectElementText(element) {&#13;
+		// https://stackoverflow.com/a/20079910/7595472&#13;
+		window.getSelection().selectAllChildren(element);&#13;
+	}&#13;
+&#13;
+	/**&#13;
+	 * Traverses up the DOM tree to find data attributes that override the default plugin settings.&#13;
+	 *&#13;
+	 * @param {Element} startElement An element to start from.&#13;
+	 * @returns {Settings} The plugin settings.&#13;
+	 * @typedef {Record&lt;"copy" | "copy-error" | "copy-success" | "copy-timeout", string | number&gt;} Settings&#13;
+	 */&#13;
+	function getSettings(startElement) {&#13;
+		/** @type {Settings} */&#13;
+		var settings = {&#13;
+			'copy': 'Copy',&#13;
+			'copy-error': 'Press Ctrl+C to copy',&#13;
+			'copy-success': 'Copied!',&#13;
+			'copy-timeout': 5000&#13;
+		};&#13;
+&#13;
+		var prefix = 'data-prismjs-';&#13;
+		for (var key in settings) {&#13;
+			var attr = prefix + key;&#13;
+			var element = startElement;&#13;
+			while (element &amp;&amp; !element.hasAttribute(attr)) {&#13;
+				element = element.parentElement;&#13;
+			}&#13;
+			if (element) {&#13;
+				settings[key] = element.getAttribute(attr);&#13;
+			}&#13;
+		}&#13;
+		return settings;&#13;
+	}&#13;
+&#13;
+	Prism.plugins.toolbar.registerButton('copy-to-clipboard', function (env) {&#13;
+		var element = env.element;&#13;
+&#13;
+		var settings = getSettings(element);&#13;
+&#13;
+		var linkCopy = document.createElement('button');&#13;
+		linkCopy.className = 'copy-to-clipboard-button';&#13;
+		linkCopy.setAttribute('type', 'button');&#13;
+		var linkSpan = document.createElement('span');&#13;
+		linkCopy.appendChild(linkSpan);&#13;
+&#13;
+		setState('copy');&#13;
+&#13;
+		registerClipboard(linkCopy, {&#13;
+			getText: function () {&#13;
+				return element.textContent;&#13;
+			},&#13;
+			success: function () {&#13;
+				setState('copy-success');&#13;
+&#13;
+				resetText();&#13;
+			},&#13;
+			error: function () {&#13;
+				setState('copy-error');&#13;
+&#13;
+				setTimeout(function () {&#13;
+					selectElementText(element);&#13;
+				}, 1);&#13;
+&#13;
+				resetText();&#13;
+			}&#13;
+		});&#13;
+&#13;
+		return linkCopy;&#13;
+&#13;
+		function resetText() {&#13;
+			setTimeout(function () { setState('copy'); }, settings['copy-timeout']);&#13;
+		}&#13;
+&#13;
+		/** @param {"copy" | "copy-error" | "copy-success"} state */&#13;
+		function setState(state) {&#13;
+			linkSpan.textContent = settings[state];&#13;
+			linkCopy.setAttribute('data-copy-state', state);&#13;
+		}&#13;
+	});&#13;
+}());</css>
+        <name>prismCopyCSS</name>
+        <sys_class_name>sp_css</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2024-11-21 16:54:47</sys_created_on>
+        <sys_id>5371fc858386d2104af4f065eeaad364</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>prismCopyCSS</sys_name>
+        <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
+        <sys_update_name>sp_css_5371fc858386d2104af4f065eeaad364</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2024-11-21 16:54:47</sys_updated_on>
+        <turn_off_scss_compilation>false</turn_off_scss_compilation>
+    </sp_css>
+</record_update>

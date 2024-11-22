@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_css">
+    <sp_css action="INSERT_OR_UPDATE">
+        <css>div.code-toolbar {&#13;
+	position: relative;&#13;
+}&#13;
+&#13;
+div.code-toolbar &gt; .toolbar {&#13;
+	position: absolute;&#13;
+	z-index: 10;&#13;
+	top: .3em;&#13;
+	right: .2em;&#13;
+	transition: opacity 0.3s ease-in-out;&#13;
+	opacity: 0;&#13;
+}&#13;
+&#13;
+div.code-toolbar:hover &gt; .toolbar {&#13;
+	opacity: 1;&#13;
+}&#13;
+&#13;
+/* Separate line b/c rules are thrown out if selector is invalid.&#13;
+   IE11 and old Edge versions don't support :focus-within. */&#13;
+div.code-toolbar:focus-within &gt; .toolbar {&#13;
+	opacity: 1;&#13;
+}&#13;
+&#13;
+div.code-toolbar &gt; .toolbar &gt; .toolbar-item {&#13;
+	display: inline-block;&#13;
+}&#13;
+&#13;
+div.code-toolbar &gt; .toolbar &gt; .toolbar-item &gt; a {&#13;
+	cursor: pointer;&#13;
+}&#13;
+&#13;
+div.code-toolbar &gt; .toolbar &gt; .toolbar-item &gt; button {&#13;
+	background: none;&#13;
+	border: 0;&#13;
+	color: inherit;&#13;
+	font: inherit;&#13;
+	line-height: normal;&#13;
+	overflow: visible;&#13;
+	padding: 0;&#13;
+	-webkit-user-select: none; /* for button */&#13;
+	-moz-user-select: none;&#13;
+	-ms-user-select: none;&#13;
+}&#13;
+&#13;
+div.code-toolbar &gt; .toolbar &gt; .toolbar-item &gt; a,&#13;
+div.code-toolbar &gt; .toolbar &gt; .toolbar-item &gt; button,&#13;
+div.code-toolbar &gt; .toolbar &gt; .toolbar-item &gt; span {&#13;
+	color: #bbb;&#13;
+	font-size: .8em;&#13;
+	padding: 0 .5em;&#13;
+	background: #f5f2f0;&#13;
+	background: rgba(224, 224, 224, 0.2);&#13;
+	box-shadow: 0 2px 0 0 rgba(0,0,0,0.2);&#13;
+	border-radius: .5em;&#13;
+}&#13;
+&#13;
+div.code-toolbar &gt; .toolbar &gt; .toolbar-item &gt; a:hover,&#13;
+div.code-toolbar &gt; .toolbar &gt; .toolbar-item &gt; a:focus,&#13;
+div.code-toolbar &gt; .toolbar &gt; .toolbar-item &gt; button:hover,&#13;
+div.code-toolbar &gt; .toolbar &gt; .toolbar-item &gt; button:focus,&#13;
+div.code-toolbar &gt; .toolbar &gt; .toolbar-item &gt; span:hover,&#13;
+div.code-toolbar &gt; .toolbar &gt; .toolbar-item &gt; span:focus {&#13;
+	color: inherit;&#13;
+	text-decoration: none;&#13;
+}</css>
+        <name>prismToolBarCSS</name>
+        <sys_class_name>sp_css</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2024-11-21 16:55:27</sys_created_on>
+        <sys_id>baa1f0498386d2104af4f065eeaad325</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>prismToolBarCSS</sys_name>
+        <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
+        <sys_update_name>sp_css_baa1f0498386d2104af4f065eeaad325</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2024-11-21 16:55:27</sys_updated_on>
+        <turn_off_scss_compilation>false</turn_off_scss_compilation>
+    </sp_css>
+</record_update>

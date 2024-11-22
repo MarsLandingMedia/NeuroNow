@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_script">
+    <sys_ui_script action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <description/>
+        <global>false</global>
+        <ignore_in_now_experience>false</ignore_in_now_experience>
+        <name>x_neuronow.materializeJS</name>
+        <script><![CDATA[// Replace "yourFunctionName" with an appropriate function name
+
+(function() {
+	return {
+		// Define your Workspace functions here
+		yourFunctionName: function() {
+
+			// Workspace code goes here 
+
+		}
+	};
+})();
+
+// Define your core UI functions here
+function yourFunctionName() {
+
+	// Core UI code goes here
+
+}]]></script>
+        <script_name>materializeJS</script_name>
+        <sys_class_name>sys_ui_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2024-11-22 01:51:04</sys_created_on>
+        <sys_id>0c4ca60983ced2104af4f065eeaad361</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_neuronow.materializeJS</sys_name>
+        <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
+        <sys_update_name>sys_ui_script_0c4ca60983ced2104af4f065eeaad361</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2024-11-22 01:51:04</sys_updated_on>
+        <ui_type>0</ui_type>
+        <use_scoped_format>false</use_scoped_format>
+    </sys_ui_script>
+</record_update>

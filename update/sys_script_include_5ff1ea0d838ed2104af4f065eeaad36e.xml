@@ -473,20 +473,15 @@ _callAndCheckStatus: function() {
 
 },
 
-_decryptApiKey: function(encryptedApiKey) {
-    var decrypter = new GlideEncrypter();
-    return decrypter.decrypt(encryptedApiKey);
-},
-
 _getApiKey: function() {
 
-    // Replace 'YOUR_API_KEY_CREDENTIAL_SYS_ID' with the sys_id of your stored API key credential
-    var apiKeyCredSysId = this.apiKeyCredSysId;
-    var apiKeyCredRecord = new GlideRecord('api_key_credentials');
-    if (apiKeyCredRecord.get(apiKeyCredSysId)) {
-        var encryptedApiKey = apiKeyCredRecord.getValue('api_key');
-        var decryptedApiKey = this._decryptApiKey(encryptedApiKey);
-        return decryptedApiKey;
+    var apiKeyCredSysId = gs.getProperty('x_neuronow.gpt.openai.api.key');
+
+	if (apiKeyCredSysId && apiKeyCredSysId !== '' && apiKeyCredSysId !== 'undefined') {
+		var e = new global.ScopedAppUtil();
+		var encrypted = apiKeyCredSysId;
+		var decrypted = e.decrypt(encrypted);
+		return decrypted;
     }
     return gs.error('Failed to retrieve API key');
 },
@@ -512,14 +507,14 @@ return str.replace(/"/g, '\\"').replace(/'/g, "\\'");
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2024-11-22 01:06:44</sys_created_on>
         <sys_id>5ff1ea0d838ed2104af4f065eeaad36e</sys_id>
-        <sys_mod_count>2</sys_mod_count>
+        <sys_mod_count>4</sys_mod_count>
         <sys_name>gpt</sys_name>
         <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
         <sys_update_name>sys_script_include_5ff1ea0d838ed2104af4f065eeaad36e</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-22 02:08:13</sys_updated_on>
+        <sys_updated_on>2024-11-22 16:39:46</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>5ff1ea0d838ed2104af4f065eeaad36e</id>

@@ -11,14 +11,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2024-11-22 01:23:57</sys_created_on>
         <sys_id>dc06624183ced2104af4f065eeaad3ee</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>4</sys_mod_count>
         <sys_name>x_neuronow.gpt.openai.assistantid</sys_name>
         <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
         <sys_policy/>
         <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
         <sys_update_name>sys_properties_dc06624183ced2104af4f065eeaad3ee</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-22 01:23:57</sys_updated_on>
+        <sys_updated_on>2024-11-23 02:38:21</sys_updated_on>
         <type>string</type>
         <value/>
         <write_roles/>

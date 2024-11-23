@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties">
+    <sys_properties action="DELETE">
+        <choices/>
+        <description>Sys_Id for OpenAi Token</description>
+        <ignore_cache>true</ignore_cache>
+        <is_private>false</is_private>
+        <name>x_neuronow.gpt.openai.tkn</name>
+        <read_roles/>
+        <suffix>gpt.openai.tkn</suffix>
+        <sys_class_name>sys_properties</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2024-11-22 01:24:33</sys_created_on>
+        <sys_id>ad26a24183ced2104af4f065eeaad301</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_neuronow.gpt.openai.tkn</sys_name>
+        <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
+        <sys_update_name>sys_properties_ad26a24183ced2104af4f065eeaad301</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2024-11-22 01:24:33</sys_updated_on>
+        <type>string</type>
+        <value/>
+        <write_roles/>
+    </sys_properties>
+    <sys_translated_text action="DELETE" query="documentkey=ad26a24183ced2104af4f065eeaad301"/>
+<sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</application>
+        <file_path/>
+        <instance_id>91a2511a1b010e18e84d2f8dee4bcb25</instance_id>
+        <instance_name>dev248071</instance_name>
+        <name>sys_properties_ad26a24183ced2104af4f065eeaad301</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties">
+    <sys_properties action="INSERT_OR_UPDATE">
+        <choices/>
+        <description>Sys_Id for OpenAi Token</description>
+        <ignore_cache>true</ignore_cache>
+        <is_private>false</is_private>
+        <name>x_neuronow.gpt.openai.tkn</name>
+        <read_roles/>
+        <suffix>gpt.openai.tkn</suffix>
+        <sys_class_name>sys_properties</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2024-11-22 01:24:33</sys_created_on>
+        <sys_id>ad26a24183ced2104af4f065eeaad301</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_neuronow.gpt.openai.tkn</sys_name>
+        <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
+        <sys_update_name>sys_properties_ad26a24183ced2104af4f065eeaad301</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2024-11-22 01:24:33</sys_updated_on>
+        <type>string</type>
+        <value/>
+        <write_roles/>
+    </sys_properties>
+    <sys_translated_text action="delete_multiple" query="documentkey=ad26a24183ced2104af4f065eeaad301"/>
+</record_update>]]></payload>
+        <payload_hash>632855758</payload_hash>
+        <record_name>x_neuronow.gpt.openai.tkn</record_name>
+        <reverted_from/>
+        <source>7e2a31d18302121084701630ceaad3df</source>
+        <source_table>sys_upgrade_history</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2024-11-22 16:50:44</sys_created_on>
+        <sys_id>c93af1d18302121084701630ceaad3cc</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>19354c878aa0000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2024-11-22 16:50:44</sys_updated_on>
+        <type>System Property</type>
+        <update_guid>893af1d13a021210ffdee93bf1948fcc</update_guid>
+        <update_guid_history>893af1d13a021210ffdee93bf1948fcc:632855758</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2024-11-23 02:37:12</sys_created_on>
+        <sys_db_object display_value="" name="sys_properties">sys_properties</sys_db_object>
+        <sys_id>115613ad3ee34a87a3f9bb535b2bc0b9</sys_id>
+        <sys_metadata>ad26a24183ced2104af4f065eeaad301</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_neuronow.gpt.openai.tkn</sys_name>
+        <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
+        <sys_scope_delete display_value="">aaf28a85e8954a2c9a10f786a5853904</sys_scope_delete>
+        <sys_update_name>sys_properties_ad26a24183ced2104af4f065eeaad301</sys_update_name>
+        <sys_update_version display_value="sys_properties_ad26a24183ced2104af4f065eeaad301">c93af1d18302121084701630ceaad3cc</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2024-11-23 02:37:12</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

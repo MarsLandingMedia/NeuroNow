@@ -5,6 +5,9 @@
     // Widget controller
     var c = this;
 
+		localStorage.removeItem('conversationId');
+		localStorage.removeItem('conversationThreadId');
+	
     c.conversation = $scope.data.conversation;
     c.conversationThread = $scope.data.thread;
     c.agentName = $scope.data.agentName.toUpperCase();
@@ -135,23 +138,19 @@
 
     // Retrieves and sets the current conversation ID
     function checkAndSetConversationId() {
-        var conversationId = localStorage.getItem('conversationId') || c.conversation;
+        var conversationId = c.conversation?c.conversation:localStorage.getItem('conversationId');
         if (c.conversation) {
             localStorage.setItem('conversationId', conversationId);
-        } else {
-            localStorage.removeItem('conversationId');
-        }
+        } 
         return conversationId;
     }
 
     // Retrieves and sets the current conversation thread ID
     function checkAndSetConversationThreadId() {
-        var conversationThreadId = localStorage.getItem('conversationThreadId') || c.conversationThread;
+        var conversationThreadId = c.conversationThread?c.conversationThread:localStorage.getItem('conversationThreadId');
         if (c.conversationThread) {
             localStorage.setItem('conversationThreadId', conversationThreadId);
-        } else {
-            localStorage.removeItem('conversationThreadId');
-        }
+        } 
         return conversationThreadId;
     }
 
@@ -353,14 +352,16 @@ code[class*="language-"], pre[class*="language-"] {
 	var conversations = gpt.getUserConversations(currUserSysId);
 	var primaryConversation = conversations[0];
 
+	console.log('jd test portal conversations: ' + JSON.stringify(primaryConversation));
+	
 	data.conversation = primaryConversation.conversationId;
 	data.thread = primaryConversation.threadId;
 
 
 	if (input && input.action == 'createThread') {			  
 		var frmInput = input.frmInput;
-		var conversationId = input.conversationId;
-		var conversationThreadId = input.conversationThreadId;
+		var conversationId = data.conversation;
+		var conversationThreadId = data.thread;
 		gpt.createThread(frmInput,conversationId,conversationThreadId);
 		data.getNewestThreadId = gpt._getThreadIdByConversationId(conversationId);
 		return data;
@@ -408,14 +409,14 @@ code[class*="language-"], pre[class*="language-"] {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2024-11-22 01:41:54</sys_created_on>
         <sys_id>4c3a6e4583ced2104af4f065eeaad3c7</sys_id>
-        <sys_mod_count>11</sys_mod_count>
+        <sys_mod_count>26</sys_mod_count>
         <sys_name>GPT Module</sys_name>
         <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
         <sys_policy/>
         <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
         <sys_update_name>sp_widget_4c3a6e4583ced2104af4f065eeaad3c7</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-22 03:07:43</sys_updated_on>
+        <sys_updated_on>2024-11-23 02:13:55</sys_updated_on>
         <template><![CDATA[<div class="widget-example chatgpt-widget">
 
   <h3 class="widget-title">{{data.portalTitle}}</h3>

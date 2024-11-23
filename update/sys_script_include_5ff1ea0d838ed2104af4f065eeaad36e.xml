@@ -11,171 +11,172 @@
         <sandbox_callable>false</sandbox_callable>
         <script><![CDATA[var gpt = Class.create();
 gpt.prototype = {
-	
-initialize: function() {
-    this.restMessages = {
-        'createThread': {
-            messageName: 'OpenAI',
-            methodName: 'createThread'
-        },
-        'addMessage': {
-            messageName: 'OpenAI',
-            methodName: 'addMessage'
-        },
-        'runThread': {
-            messageName: 'OpenAI',
-            methodName: 'runThread'
-        },
-        'runStatus': {
-            messageName: 'OpenAI',
-            methodName: 'runStatus'
-        },
-        'getMessage': {
-            messageName: 'OpenAI',
-            methodName: 'getMessage'
-        },
-        'functionResponse': {
-            messageName: 'OpenAI',
-            methodName: 'functionResponse'
+
+    initialize: function() {
+        this.restMessages = {
+            'createThread': {
+                messageName: 'OpenAI',
+                methodName: 'createThread'
+            },
+            'addMessage': {
+                messageName: 'OpenAI',
+                methodName: 'addMessage'
+            },
+            'runThread': {
+                messageName: 'OpenAI',
+                methodName: 'runThread'
+            },
+            'runStatus': {
+                messageName: 'OpenAI',
+                methodName: 'runStatus'
+            },
+            'getMessage': {
+                messageName: 'OpenAI',
+                methodName: 'getMessage'
+            },
+            'functionResponse': {
+                messageName: 'OpenAI',
+                methodName: 'functionResponse'
+            }
+        };
+
+        this.openAiEncryptedKey = gs.getProperty('x_neuronow.gpt.openai.api.key');
+        this.apiKey = this._getApiKey();
+        this.assistantId = gs.getProperty('x_neuronow.gpt.openai.assistantid');
+        this.toolCallId = '';
+        this.threadId = '';
+        this.runId = '';
+        this.conversationId = '';
+
+    },
+
+    /**
+     * Retrieves an array of message objects from the 'x_neuronow_openai_conversation_message' table.
+     * @param {string} currentConversationId - The sys_id of the current conversation.
+     * @returns {Array} An array of objects, each containing the message and role.
+     */
+    currentConversationThreads: function(currentConversationId) {
+        var threads = [];
+        var initialUserThreadFound = false;
+        var messageGR = new GlideRecord('x_neuronow_openai_conversation_message');
+        messageGR.addQuery('conversation_id', currentConversationId);
+        messageGR.orderBy('number'); // Sorting in ascending order by 'number'
+        messageGR.query();
+
+        while (messageGR.next()) {
+            var roleString = messageGR.getValue('role').toString();
+            var role = roleString.toUpperCase();
+            var message = messageGR.getValue('message');
+            var date = messageGR.sys_created_on.getDisplayValue();
+
+            // Start adding threads to the array only after finding the first 'user' role
+            if (!initialUserThreadFound && role === 'USER') {
+                initialUserThreadFound = true;
+            }
+
+            if (initialUserThreadFound) {
+                threads.push({ message: message, role: role , date:date});
+            }
         }
-    };
 
-    this.apiKeyCredSysId = gs.getProperty('x_neuronow.gpt.openai.tkn');
-    this.apiKey = this._getApiKey();
-    this.assistantId = gs.getProperty('x_neuronow.gpt.openai.assistantid');
-    this.toolCallId = '';
-    this.threadId = '';
-    this.runId = '';
-    this.conversationId = '';
+        return threads;
+    },
 
-},
+    /**
+     * Retrieves or creates conversations for a given user and gets their associated thread IDs.
+     * @param {string} userSysId - The sys_id of the user.
+     * @returns {Array} An array of objects containing conversation IDs and thread IDs.
+     */
+    getUserConversations: function(userSysId) {
+        var assistantId = this.assistantId;
+        var conversations = [];
+        var convGR = new GlideRecord('x_neuronow_openai_conversation');
+        convGR.addQuery('user', userSysId);
+        convGR.query();
 
-/**
- * Retrieves an array of message objects from the 'x_neuronow_openai_conversation_message' table.
- * @param {string} currentConversationId - The sys_id of the current conversation.
- * @returns {Array} An array of objects, each containing the message and role.
- */
-currentConversationThreads: function(currentConversationId) {
-    var threads = [];
-    var initialUserThreadFound = false;
-    var messageGR = new GlideRecord('x_neuronow_openai_conversation_message');
-    messageGR.addQuery('conversation_id', currentConversationId);
-    messageGR.orderBy('number'); // Sorting in ascending order by 'number'
-    messageGR.query();
-
-    while (messageGR.next()) {
-        var roleString = messageGR.getValue('role').toString();
-        var role = roleString.toUpperCase();
-        var message = messageGR.getValue('message');
-        var date = messageGR.sys_created_on.getDisplayValue();
-
-        // Start adding threads to the array only after finding the first 'user' role
-        if (!initialUserThreadFound && role === 'USER') {
-            initialUserThreadFound = true;
+        while (convGR.next()) {
+            var conversationId = convGR.getUniqueValue();
+            var threadId = this._getThreadIdByConversationId(conversationId);
+            conversations.push({ conversationId: conversationId, threadId: threadId });
         }
 
-        if (initialUserThreadFound) {
-            threads.push({ message: message, role: role , date:date});
+        if (conversations.length === 0) {
+            // Create a new conversation record if no existing records are found
+            convGR.initialize();
+            convGR.user = userSysId;
+            convGR.assistant_id = assistantId;
+            convGR.insert();
+            var newConversationId = convGR.getUniqueValue();
+            // Assuming thread is created elsewhere or null if not created yet
+            conversations.push({ conversationId: newConversationId, threadId: null });
         }
-    }
 
-    return threads;
-},
+        this.conversationId = conversations[0].conversationId;
+        return conversations;
+    },
 
-/**
- * Retrieves or creates conversations for a given user and gets their associated thread IDs.
- * @param {string} userSysId - The sys_id of the user.
- * @returns {Array} An array of objects containing conversation IDs and thread IDs.
- */
-getUserConversations: function(userSysId) {
-    var assistantId = this.assistantId;
-    var conversations = [];
-    var convGR = new GlideRecord('x_neuronow_openai_conversation');
+    /**
+     * Retrieves the thread ID associated with a given conversation ID.
+     * @param {string} conversationId - The ID of the conversation.
+     * @returns {string|null} The thread ID if found, otherwise null.
+     */
+    _getThreadIdByConversationId: function(conversationId) {
+        var threadId = null;
 
-    convGR.addQuery('x_neuronow_openai_conversationuser', userSysId);
-    convGR.query();
+        var gr = new GlideRecord('x_neuronow_openai_conversation_message'); // Replace with actual table name
+        gr.addQuery('conversation_id', conversationId);
+        gr.orderByDesc('sys_created_on');
+        gr.query();
 
-    while (convGR.next()) {
-        var conversationId = convGR.getUniqueValue();
-        var threadId = this._getThreadIdByConversationId(conversationId);
-        conversations.push({ conversationId: conversationId, threadId: threadId });
-    }
+        if (gr.next()) {
+            threadId = gr.getValue('thread_id');
+        }
 
-    if (conversations.length === 0) {
-        // Create a new conversation record if no existing records are found
-        convGR.initialize();
-        convGR.user = userSysId;
-        convGR.assistant_id = assistantId;
-        convGR.insert();
-        var newConversationId = convGR.getUniqueValue();
-        // Assuming thread is created elsewhere or null if not created yet
-        conversations.push({ conversationId: newConversationId, threadId: null });
-    }
+        return threadId;
+    },
 
-    return conversations;
-},
+    /**
+     * Creates a user conversation message record in the 'x_neuronow_openai_conversation_message' table.
+     * @param {string} msgValue - The message content.
+     * @param {string} role - The message content.
+     */
+    _createConversationMessage: function(msgValue,role) {
 
-/**
- * Retrieves the thread ID associated with a given conversation ID.
- * @param {string} conversationId - The ID of the conversation.
- * @returns {string|null} The thread ID if found, otherwise null.
- */
-_getThreadIdByConversationId: function(conversationId) {
-    var threadId = null;
+        var now = new GlideDateTime();
+        // Subtract 30 seconds from the current time
+        now.addSeconds(-1);
 
-    var gr = new GlideRecord('x_neuronow_openai_conversation_message'); // Replace with actual table name
-    gr.addQuery('conversation_id', conversationId);
-    gr.orderByDesc('sys_created_on');
-    gr.query();
+        var messageGR = new GlideRecord('x_neuronow_openai_conversation_message');
+        var messageGR_q = "sys_created_on>=" + now + "^message=" + msgValue + "^role=" + role;
+        messageGR.addQuery(messageGR_q);
+        messageGR.query();
+        if(messageGR.next()){
+            //nothing
+        } else {
+            messageGR.initialize();
+            messageGR.message = msgValue;
+            messageGR.conversation_id = this.conversationId;
+            messageGR.role = role;
+            messageGR.assistant_id = this.assistantId;
+            messageGR.thread_id = this.threadId;
+            var msgId = messageGR.insert();
+        }
 
-    if (gr.next()) {
-        threadId = gr.getValue('thread_id');
-    }
+        return msgId;
+    },
 
-    return threadId;
-},
+    createThread: function(msg,conversationId,conversationThreadId) {
 
-/**
- * Creates a user conversation message record in the 'x_neuronow_openai_conversation_message' table.
- * @param {string} msgValue - The message content.
- * @param {string} role - The message content.
- */
-_createConversationMessage: function(msgValue,role) {
+        this.toolCallId = '';
+        var addMsg;
 
-    var now = new GlideDateTime();
-    // Subtract 30 seconds from the current time
-    now.addSeconds(-1);
-
-    var messageGR = new GlideRecord('x_neuronow_openai_conversation_message');
-    var messageGR_q = "sys_created_on>=" + now + "^message=" + msgValue + "^role=" + role;
-    messageGR.addQuery(messageGR_q);
-    messageGR.query();
-    if(messageGR.next()){
-        //nothing
-    } else {
-        messageGR.initialize();
-        messageGR.message = msgValue;
-        messageGR.conversation_id = this.conversationId;
-        messageGR.role = role;
-        messageGR.assistant_id = this.assistantId;
-        messageGR.thread_id = this.threadId;
-        var msgId = messageGR.insert();
-    }
-    
-    return msgId;
-},
-
-createThread: function(msg,conversationId,conversationThreadId) {
-    this.toolCallId = '';
-    try {
         var apiKey = this.apiKey;
-        this.conversationId = conversationId;
 
         //if we have a thread, use this, otherwise create a new one
-        if(conversationThreadId){
+        if(conversationThreadId && conversationThreadId !== 'undefined' && conversationThreadId !== ''){
 
             this.threadId = conversationThreadId;
-            var addMsg = this._addMessage(msg);
+            addMsg = this._addMessage(msg);
             return addMsg;
 
         } else {
@@ -186,7 +187,7 @@ createThread: function(msg,conversationId,conversationThreadId) {
             var response = restMessage.execute();
             var responseBody = response.getBody();
             var httpStatus = response.getStatusCode();
-			gs.info('jd test: ' + responseBody);
+
             // Parse the response body to extract the thread ID
             var responseObj = JSON.parse(responseBody);
             var threadId = responseObj.id;
@@ -195,18 +196,13 @@ createThread: function(msg,conversationId,conversationThreadId) {
                 this.threadId = threadId;
             }
 
-            this._addMessage(msg);
+            addMsg = this._addMessage(msg);
         }
 
-    } catch (ex) {
-        var message = ex.getMessage();
-        gs.error(message);
-        return message;
-    }
-},
+    },
 
-_addMessage: function(msgValue,conversationId) {
-    try {
+    _addMessage: function(msgValue) {
+
         var apiKey = this.apiKey;
 
         var dataObj = {
@@ -241,15 +237,10 @@ _addMessage: function(msgValue,conversationId) {
         var runThread = this._runThread();
         return runThread;
 
-    } catch (ex) {
-        var message = ex.getMessage();
-        gs.error(message);
-        return message;
-    }
-},
+    },
 
-_runThread: function() {
-    try {
+    _runThread: function() {
+
         var apiKey = this.apiKey;
 
         var dataObj = {
@@ -280,23 +271,16 @@ _runThread: function() {
             this.runId = runId;
         }
 
-        var callAndCheckStatus = this._callAndCheckStatus();
-        return callAndCheckStatus;
+        return this._callAndCheckStatus();;
 
-    } catch (ex) {
-        var message = ex.getMessage();
-        gs.error(message);
-        return message;
-    }
-},
+    },
 
-_runStatus: function() {
-    try {
+    _runStatus: function() {
+
         var apiKey = this.apiKey;
         var threadId = this.threadId;
         var runId = this.runId;
         var toolCallId = this.toolCallId;
-
 
         var restMessage = new sn_ws.RESTMessageV2(this.restMessages.runStatus.messageName, this.restMessages.runStatus.methodName);
         restMessage.setStringParameterNoEscape('apiKey', 'Bearer ' + apiKey);
@@ -310,32 +294,27 @@ _runStatus: function() {
         // Parse the response body to extract the thread ID
         var responseObj = JSON.parse(responseBody);
         var runStatus = responseObj.status; // Replace with the actual path to the thread ID in the response
-        var requiredActionType = responseObj.required_action.type;
+        var requiredActionType = responseObj.tools[0].type;
 
         if((!toolCallId  || toolCallId === '' || toolCallId === undefined) && (runStatus === 'requires_action' && requiredActionType === 'submit_tool_outputs')){
-                var toolCall = responseObj.required_action.submit_tool_outputs.tool_calls[0];
-                var toolMsg = {};
-                this.toolCallId = toolCall.id;
-                toolMsg.openAiFunction = toolCall['function'].name;
-                var funcArgumentsRaw = toolCall['function'].arguments;
-                toolMsg.openAifunctionArguments = funcArgumentsRaw.replace(/.*:\s*"([^"]+)".*/, '$1');
+            var toolCall = responseObj.required_action.submit_tool_outputs.tool_calls[0];
+            var toolMsg = {};
+            this.toolCallId = toolCall.id;
+            toolMsg.openAiFunction = toolCall['function'].name;
+            var funcArgumentsRaw = toolCall['function'].arguments;
+            toolMsg.openAifunctionArguments = funcArgumentsRaw.replace(/.*:\s*"([^"]+)".*/, '$1');
 
-                var toolResp = this._runTool(toolMsg);
-                this._functionResponse(toolResp);
+            var toolResp = this._runTool(toolMsg);
+            this._functionResponse(toolResp);
         }
 
         return runStatus;
 
-    } catch (ex) {
-        var message = ex.getMessage();
-        gs.error(message);
-        return message;
-    }
-},
+    },
 
-_functionResponse: function(toolResp) {
+    _functionResponse: function(toolResp) {
 
-    try {
+        // try {
         var apiKey = this.apiKey;
         var threadId = this.threadId;
         var runId = this.runId;
@@ -370,16 +349,16 @@ _functionResponse: function(toolResp) {
         var callAndCheckStatus = this._callAndCheckStatus();
         return callAndCheckStatus;
 
-    } catch (ex) {
-        var message = ex.getMessage();
-        gs.error(message);
-        return message;
-    }
-},
+        // } catch (ex) {
+        //     var message = ex.getMessage();
+        //     gs.error(message);
+        //     return message;
+        // }
+    },
 
 
-_getMessage: function(){
-    try {
+    _getMessage: function(){
+        // try {
         var apiKey = this.apiKey;
         var threadId = this.threadId;
 
@@ -398,108 +377,106 @@ _getMessage: function(){
         this._createConversationMessage(msgValue, 'assistant'); //add to the conversation database
         return;
 
-    } catch (ex) {
-        var message = ex.getMessage();
-        gs.error(message);
-        return message;
-    }
-},
+        // } catch (ex) {
+        //     var message = ex.getMessage();
+        //     gs.error(message);
+        //     return message;
+        // }
+    },
 
-_openAiFunction_get_user_data: function(name){
+    _openAiFunction_get_user_data: function(name){
 
-    var result = {};
+        var result = {};
 
-    // GlideRecord query to find user by name
-    var gr = new GlideRecord('sys_user');
-    var gr_q = "nameLIKE"+name;
-    gr.addQuery(gr_q);
-    gr.query();
+        // GlideRecord query to find user by name
+        var gr = new GlideRecord('sys_user');
+        var gr_q = "nameLIKE"+name;
+        gr.addQuery(gr_q);
+        gr.query();
 
-    if (gr.next()) {
-        result.sys_id = gr.getValue('sys_id');
-        result.full_name = gr.getDisplayValue('name');
-        result.email = gr.getDisplayValue('email');
-        result.home_phone = gr.getDisplayValue('home_phone');
-        result.user_name = gr.getDisplayValue('user_name');
-        result.title = gr.getDisplayValue('title');
-        result.department = gr.getDisplayValue('department');
-    } else {
-        // Handling the case where no user is found
-        result.error = "User not found";
-    }
-
-    // Manually escape quotes and encode to JSON
-    var toolResp =  JSON.stringify(result).replace(/"/g, '\\"').replace(/'/g, "\\'");
-
-    return toolResp;
-
-},
-
-_runTool: function (toolMsg){
-
-    var resp;
-
-    // Map of functions
-    var openAiTools = {
-        "get_user_data": this._openAiFunction_get_user_data
-    };
-
-    var openAiFunction = toolMsg.openAiFunction;
-    var openAifunctionArguments = toolMsg.openAifunctionArguments;
-
-    // Evaluate and call the function
-    if (openAiTools[openAiFunction]) {
-        resp = openAiTools[openAiFunction](openAifunctionArguments); // Calls functionOne in this case
-    } else {
-        gs.info("No such function mapped for " + openAiFunction);
-    }
-    return resp;
-},
-
-_callAndCheckStatus: function() {
-    var status = this._runStatus();
-    var holding,terminate;
-
-    while (status === 'queued' || status === 'in_progress' || status === 'requires_action') {
-        this._sleep(1000); // Sleep for 10 seconds (not recommended, see note below)
-        holding = this._runStatus();
-
-        if (holding === 'completed') {
-            terminate = this._getMessage(); // Call the next method once the status is complete
-            return;
+        if (gr.next()) {
+            result.sys_id = gr.getValue('sys_id');
+            result.full_name = gr.getDisplayValue('name');
+            result.email = gr.getDisplayValue('email');
+            result.home_phone = gr.getDisplayValue('home_phone');
+            result.user_name = gr.getDisplayValue('user_name');
+            result.title = gr.getDisplayValue('title');
+            result.department = gr.getDisplayValue('department');
+        } else {
+            // Handling the case where no user is found
+            result.error = "User not found";
         }
-    }
+
+        // Manually escape quotes and encode to JSON
+        var toolResp =  JSON.stringify(result).replace(/"/g, '\\"').replace(/'/g, "\\'");
+
+        return toolResp;
+
+    },
+
+    _runTool: function (toolMsg){
+
+        var resp;
+
+        // Map of functions
+        var openAiTools = {
+            "get_user_data": this._openAiFunction_get_user_data
+        };
+
+        var openAiFunction = toolMsg.openAiFunction;
+        var openAifunctionArguments = toolMsg.openAifunctionArguments;
+
+        // Evaluate and call the function
+        if (openAiTools[openAiFunction]) {
+            resp = openAiTools[openAiFunction](openAifunctionArguments); // Calls functionOne in this case
+        } else {
+            gs.info("No such function mapped for " + openAiFunction);
+        }
+        return resp;
+    },
+
+    _callAndCheckStatus: function() {
+        var status = this._runStatus();
+        var holding,terminate;
+
+        while (status === 'queued' || status === 'in_progress' || status === 'requires_action') {
+            this._sleep(1000); // Sleep for 10 seconds (not recommended, see note below)
+            holding = this._runStatus();
+
+            if (holding === 'completed') {
+                terminate = this._getMessage(); // Call the next method once the status is complete
+                return;
+            }
+        }
 
 
-},
+    },
 
-_getApiKey: function() {
+    _getApiKey: function() {
 
-    var apiKeyCredSysId = gs.getProperty('x_neuronow.gpt.openai.api.key');
+        var openAiEncryptedKey = this.openAiEncryptedKey;
 
-	if (apiKeyCredSysId && apiKeyCredSysId !== '' && apiKeyCredSysId !== 'undefined') {
-		var e = new global.ScopedAppUtil();
-		var encrypted = apiKeyCredSysId;
-		var decrypted = e.decrypt(encrypted);
-		return decrypted;
-    }
-    return gs.error('Failed to retrieve API key');
-},
+        if (openAiEncryptedKey && openAiEncryptedKey !== '' && openAiEncryptedKey !== 'undefined') {
+            var e = new global.ScopedAppUtil();
+            return e.decrypt(openAiEncryptedKey);
+        }
+        return gs.error('Failed to retrieve API key');
+    },
 
-_sleep: function(milliseconds) {
-    var start = new Date().getTime();
-    while (new Date().getTime() < start + milliseconds){}
-},
+    _sleep: function(milliseconds) {
+        var start = new Date().getTime();
+        while (new Date().getTime() < start + milliseconds){}
+    },
 
-/**
- * Escapes single and double quotes in a string.
- * @param {string} str - The string to escape.
- * @returns {string} The escaped string.
- */
- _escapeQuotes: function(str) {
-if (!str) return str;
-return str.replace(/"/g, '\\"').replace(/'/g, "\\'");
-},
+    /**
+     * Escapes single and double quotes in a string.
+     * @param {string} str - The string to escape.
+     * @returns {string} The escaped string.
+     */
+    _escapeQuotes: function(str) {
+        if (!str) return str;
+        return str.replace(/"/g, '\\"').replace(/'/g, "\\'");
+    },
 
     type: 'gpt'
 };]]></script>
@@ -507,14 +484,14 @@ return str.replace(/"/g, '\\"').replace(/'/g, "\\'");
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2024-11-22 01:06:44</sys_created_on>
         <sys_id>5ff1ea0d838ed2104af4f065eeaad36e</sys_id>
-        <sys_mod_count>5</sys_mod_count>
+        <sys_mod_count>39</sys_mod_count>
         <sys_name>gpt</sys_name>
         <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
         <sys_update_name>sys_script_include_5ff1ea0d838ed2104af4f065eeaad36e</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-22 17:20:15</sys_updated_on>
+        <sys_updated_on>2024-11-23 02:36:29</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>5ff1ea0d838ed2104af4f065eeaad36e</id>

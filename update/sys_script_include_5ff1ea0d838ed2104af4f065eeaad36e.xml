@@ -224,7 +224,6 @@ gpt.prototype = {
         var response = restMessage.execute();
         var responseBody = response.getBody();
         var httpStatus = response.getStatusCode();
-
         // Parse the response body to extract the thread ID
         var responseObj = JSON.parse(responseBody);
         var messageId = responseObj.id; // Replace with the actual path to the thread ID in the response
@@ -254,7 +253,6 @@ gpt.prototype = {
         var restMessage = new sn_ws.RESTMessageV2(this.restMessages.runThread.messageName, this.restMessages.runThread.methodName);
         restMessage.setStringParameterNoEscape('apiKey', 'Bearer ' + apiKey);
         restMessage.setStringParameterNoEscape('threadId', threadId);
-
 
         // Set the request body
         restMessage.setRequestBody(requestBody);
@@ -290,7 +288,7 @@ gpt.prototype = {
         var response = restMessage.execute();
         var responseBody = response.getBody();
         var httpStatus = response.getStatusCode();
-        gs.info('jd test: ' + responseBody);
+        gs.info('jd test: httpStatus ' + httpStatus);
         // Parse the response body to extract the thread ID
         var responseObj = JSON.parse(responseBody);
         var runStatus = responseObj.status; // Replace with the actual path to the thread ID in the response
@@ -375,43 +373,14 @@ gpt.prototype = {
 
     },
 
-    _openAiFunction_get_user_data: function(name){
-
-        var result = {};
-
-        // GlideRecord query to find user by name
-        var gr = new GlideRecord('sys_user');
-        var gr_q = "nameLIKE"+name;
-        gr.addQuery(gr_q);
-        gr.query();
-
-        if (gr.next()) {
-            result.sys_id = gr.getValue('sys_id');
-            result.full_name = gr.getDisplayValue('name');
-            result.email = gr.getDisplayValue('email');
-            result.home_phone = gr.getDisplayValue('home_phone');
-            result.user_name = gr.getDisplayValue('user_name');
-            result.title = gr.getDisplayValue('title');
-            result.department = gr.getDisplayValue('department');
-        } else {
-            // Handling the case where no user is found
-            result.error = "User not found";
-        }
-
-        // Manually escape quotes and encode to JSON
-        var toolResp =  JSON.stringify(result).replace(/"/g, '\\"').replace(/'/g, "\\'");
-
-        return toolResp;
-
-    },
-
     _runTool: function (toolMsg){
 
         var resp;
+        var gptFunctions = new gptFunctions();
 
         // Map of functions
         var openAiTools = {
-            "get_user_data": this._openAiFunction_get_user_data
+            "get_user_data": gptFunctions._openAiFunction_get_user_data
         };
 
         var openAiFunction = toolMsg.openAiFunction;
@@ -475,14 +444,14 @@ gpt.prototype = {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2024-11-22 01:06:44</sys_created_on>
         <sys_id>5ff1ea0d838ed2104af4f065eeaad36e</sys_id>
-        <sys_mod_count>50</sys_mod_count>
+        <sys_mod_count>62</sys_mod_count>
         <sys_name>gpt</sys_name>
         <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
         <sys_update_name>sys_script_include_5ff1ea0d838ed2104af4f065eeaad36e</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-23 04:18:40</sys_updated_on>
+        <sys_updated_on>2024-11-23 06:22:39</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>5ff1ea0d838ed2104af4f065eeaad36e</id>

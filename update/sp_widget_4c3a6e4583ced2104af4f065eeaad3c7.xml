@@ -342,8 +342,7 @@ code[class*="language-"], pre[class*="language-"] {
   data.agentName = gs.getProperty('x_neuronow.gpt.openai.agent.name');
 	data.portalTitle = gs.getProperty('x_neuronow.gpt.portal.title');
 	data.chatInputPlaceHolder = gs.getProperty('x_neuronow.gpt.chat.input.placeholder');
-	
-	
+		
 	var currUserSysId = currentUserDetails.sysID;
 	data.userName = currentUserDetails.firstName;
 	data.userFullName = currentUserDetails.fullName;
@@ -351,12 +350,9 @@ code[class*="language-"], pre[class*="language-"] {
 
 	var conversations = gpt.getUserConversations(currUserSysId);
 	var primaryConversation = conversations[0];
-
-	console.log('jd test portal conversations: ' + JSON.stringify(primaryConversation));
 	
 	data.conversation = primaryConversation.conversationId;
 	data.thread = primaryConversation.threadId;
-
 
 	if (input && input.action == 'createThread') {			  
 		var frmInput = input.frmInput;
@@ -373,7 +369,6 @@ code[class*="language-"], pre[class*="language-"] {
 		data.conversationThreads = gpt.currentConversationThreads(currentConversation);
 		return data;
 	}
-
 
 
 	function getCurrentUserDetails() {
@@ -409,14 +404,14 @@ code[class*="language-"], pre[class*="language-"] {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2024-11-22 01:41:54</sys_created_on>
         <sys_id>4c3a6e4583ced2104af4f065eeaad3c7</sys_id>
-        <sys_mod_count>26</sys_mod_count>
+        <sys_mod_count>27</sys_mod_count>
         <sys_name>GPT Module</sys_name>
         <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
         <sys_policy/>
         <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
         <sys_update_name>sp_widget_4c3a6e4583ced2104af4f065eeaad3c7</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-23 02:13:55</sys_updated_on>
+        <sys_updated_on>2024-11-23 03:27:09</sys_updated_on>
         <template><![CDATA[<div class="widget-example chatgpt-widget">
 
   <h3 class="widget-title">{{data.portalTitle}}</h3>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_fix">
+    <sys_script_fix action="INSERT_OR_UPDATE">
+        <before>false</before>
+        <description/>
+        <name>OpenAi Delete Threads</name>
+        <record_for_rollback>true</record_for_rollback>
+        <script><![CDATA[// Function to delete threads
+/**
+ * Deletes threads based on their IDs by making REST API calls.
+ *
+ * @param {Array} threadIds - An array of thread IDs to delete.
+ */
+function deleteThreads(threadIds) {
+    var gpt = new x_neuronow.gpt(); // Instance of the GPT class
+    var apiKey = gpt._getApiKey();  // Retrieve the API key
+
+    // Define REST message configuration
+    var restMessages = {
+        'deleteThread': {
+            messageName: 'OpenAI',
+            methodName: 'deleteThread'
+        }
+    };
+
+    // Iterate over thread IDs and call the delete API
+    for (var t in threadIds) {
+        var restMessage = new sn_ws.RESTMessageV2(restMessages.deleteThread.messageName, restMessages.deleteThread.methodName);
+        restMessage.setStringParameterNoEscape('apiKey', 'Bearer ' + apiKey);
+        restMessage.setStringParameterNoEscape('threadId', threadIds[t]);
+
+        var response = restMessage.execute();
+        var responseBody = response.getBody();
+        var httpStatus = response.getStatusCode();
+            
+        var gr = new GlideRecord('x_neuronow_openai_conversation_message');
+        var gr_q = 'thread_id='+threadIds[t];
+        gr.addQuery(gr_q);
+		var deletedCount = gr.getRowCount();
+		gr.deleteMultiple();      
+        gs.info('Deleted ' + deletedCount + ' thread records with thread_id: ' + threadIds[t]);      
+    }
+}
+
+// Function to execute the fix script
+/**
+ * Executes the fix script to retrieve unique thread IDs and delete them.
+ */
+function executeFixScript() {
+    /**
+     * Retrieves an array of unique thread IDs from the 'x_neuronow_openai_conversation_message' table.
+     *
+     * @returns {Array} - An array of unique thread IDs.
+     */
+    function getUniqueThreadIds() {
+        var threadIds = [];
+        var seenThreadIds = {}; // Object to track unique thread IDs
+        var gr = new GlideRecord('x_neuronow_openai_conversation_message');
+        gr.query();
+
+        while (gr.next()) {
+            var threadId = gr.getValue('thread_id');
+            if (!seenThreadIds[threadId]) {
+                seenThreadIds[threadId] = true;
+                threadIds.push(threadId);
+            }
+        }
+
+        return threadIds;
+    }
+
+    // Retrieve unique thread IDs
+    var uniqueThreadIds = getUniqueThreadIds();
+	//var uniqueThreadIds = ['thread_OzGrtG3kzWmzEkM4ZcN5Y92s'];
+    gs.info('Unique Thread IDs to be deleted: ' + JSON.stringify(uniqueThreadIds));
+
+    // Delete the retrieved thread IDs
+    deleteThreads(uniqueThreadIds);
+}
+
+// Execute the fix script
+executeFixScript();
+]]></script>
+        <sys_class_name>sys_script_fix</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2024-11-24 04:31:10</sys_created_on>
+        <sys_id>31f325b58306921084701630ceaad326</sys_id>
+        <sys_mod_count>20</sys_mod_count>
+        <sys_name>OpenAi Delete Threads</sys_name>
+        <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
+        <sys_update_name>sys_script_fix_31f325b58306921084701630ceaad326</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2024-11-24 06:28:12</sys_updated_on>
+        <unloadable>false</unloadable>
+    </sys_script_fix>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>31f325b58306921084701630ceaad326</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2024-11-24 04:31:10</sys_created_on>
+        <sys_id>8f14a5b58306921084701630ceaad3e4</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2024-11-24 06:27:48</sys_updated_on>
+        <table>sys_script_fix</table>
+        <use_es_latest>false</use_es_latest>
+    </sys_es_latest_script>
+</record_update>

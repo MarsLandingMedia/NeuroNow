@@ -37,7 +37,11 @@ gpt.prototype = {
             'functionResponse': {
                 messageName: 'OpenAI',
                 methodName: 'functionResponse'
-            }
+            },
+			'deleteThread': {
+				messageName: 'OpenAI',
+				methodName: 'deleteThread'
+			}
         };
 
         this.openAiEncryptedKey = gs.getProperty('x_neuronow.gpt.openai.api.key');
@@ -49,6 +53,45 @@ gpt.prototype = {
         this.conversationId = '';
 
     },
+
+	deleteConversationThreads: function(ConversationId){
+	
+	var threadIds = [];
+	var seenThreadIds = {}; // Object to track unique thread IDs
+	var gr = new GlideRecord('x_neuronow_openai_conversation_message');
+	var gr_q = 'conversation_id='+ConversationId;
+	gr.addQuery(gr_q);		
+	gr.query();
+	
+	while (gr.next()) {
+		gs.info('jd test script include: ' + gr.sys_id.toString());
+		var threadId = gr.getValue('thread_id');
+		if (!seenThreadIds[threadId]) {
+			seenThreadIds[threadId] = true;
+			threadIds.push(threadId);
+		}
+		gr.deleteRecord();
+	}
+
+	var thread = threadIds[0];
+
+	var restMessage = new sn_ws.RESTMessageV2(this.restMessages.deleteThread.messageName, this.restMessages.deleteThread.methodName);
+	restMessage.setStringParameterNoEscape('apiKey', 'Bearer ' + this.apiKey);
+	restMessage.setStringParameterNoEscape('threadId', thread);
+
+	var response = restMessage.execute();
+	var responseBody = response.getBody();
+	var httpStatus = response.getStatusCode();
+
+	//we delete the conversation record last so that we have a reference until the end
+	var delConv = new GlideRecord('x_neuronow_openai_conversation');
+	delConv.get(ConversationId);
+	delConv.deleteRecord();
+
+	// gs.info('Deleted ' + deletedCount + ' thread records with thread_id: ' + thread); 
+
+	},
+
 
     /**
      * Retrieves an array of message objects from the 'x_neuronow_openai_conversation_message' table.
@@ -227,7 +270,7 @@ gpt.prototype = {
         // Parse the response body to extract the thread ID
         var responseObj = JSON.parse(responseBody);
         var messageId = responseObj.id; // Replace with the actual path to the thread ID in the response
-
+				
         if (messageId) {
             this.messageId = messageId;
         }
@@ -243,7 +286,7 @@ gpt.prototype = {
         var apiKey = this.apiKey;
 
         var dataObj = {
-            "assistant_id": this.assistantId // Example content
+            "assistant_id": this.assistantId
         };
 
         var requestBody = JSON.stringify(dataObj);
@@ -260,6 +303,8 @@ gpt.prototype = {
         var response = restMessage.execute();
         var responseBody = response.getBody();
         var httpStatus = response.getStatusCode();
+
+gs.info('jd test: response ' + JSON.stringify(response));
 
         // Parse the response body to extract the thread ID
         var responseObj = JSON.parse(responseBody);
@@ -288,7 +333,7 @@ gpt.prototype = {
         var response = restMessage.execute();
         var responseBody = response.getBody();
         var httpStatus = response.getStatusCode();
-        gs.info('jd test: httpStatus ' + httpStatus);
+        
         // Parse the response body to extract the thread ID
         var responseObj = JSON.parse(responseBody);
         var runStatus = responseObj.status; // Replace with the actual path to the thread ID in the response
@@ -376,7 +421,7 @@ gpt.prototype = {
     _runTool: function (toolMsg){
 
         var resp;
-        var gptFunctions = new gptFunctions();
+        var gptFunctions = new x_neuronow.gptFunctions();
 
         // Map of functions
         var openAiTools = {
@@ -444,24 +489,24 @@ gpt.prototype = {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2024-11-22 01:06:44</sys_created_on>
         <sys_id>5ff1ea0d838ed2104af4f065eeaad36e</sys_id>
-        <sys_mod_count>62</sys_mod_count>
+        <sys_mod_count>74</sys_mod_count>
         <sys_name>gpt</sys_name>
         <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
         <sys_update_name>sys_script_include_5ff1ea0d838ed2104af4f065eeaad36e</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-23 06:22:39</sys_updated_on>
+        <sys_updated_on>2024-11-24 07:48:56</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>5ff1ea0d838ed2104af4f065eeaad36e</id>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2024-11-22 01:06:44</sys_created_on>
         <sys_id>3822220d838ed2104af4f065eeaad377</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-22 01:06:44</sys_updated_on>
+        <sys_updated_on>2024-11-24 03:46:05</sys_updated_on>
         <table>sys_script_include</table>
-        <use_es_latest>true</use_es_latest>
+        <use_es_latest>false</use_es_latest>
     </sys_es_latest_script>
 </record_update>

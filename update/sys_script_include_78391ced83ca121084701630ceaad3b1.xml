@@ -32,11 +32,12 @@ gptFunctions.prototype = {
             result.user_name = gr.getDisplayValue('user_name');
             result.title = gr.getDisplayValue('title');
             result.department = gr.getDisplayValue('department');
+			result.manager = gr.getDisplayValue('manager');
         } else {
             // Handling the case where no user is found
             result.error = "User not found";
         }
-// 
+
         // Manually escape quotes and encode to JSON
         var toolResp =  JSON.stringify(result).replace(/"/g, '\\"').replace(/'/g, "\\'");
 
@@ -50,24 +51,24 @@ gptFunctions.prototype = {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2024-11-23 04:26:56</sys_created_on>
         <sys_id>78391ced83ca121084701630ceaad3b1</sys_id>
-        <sys_mod_count>1</sys_mod_count>
+        <sys_mod_count>3</sys_mod_count>
         <sys_name>gptFunctions</sys_name>
         <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
         <sys_update_name>sys_script_include_78391ced83ca121084701630ceaad3b1</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-23 04:31:41</sys_updated_on>
+        <sys_updated_on>2024-11-24 04:23:07</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>78391ced83ca121084701630ceaad3b1</id>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2024-11-23 04:26:55</sys_created_on>
         <sys_id>8b891ced83ca121084701630ceaad3d8</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-23 04:26:55</sys_updated_on>
+        <sys_updated_on>2024-11-24 03:46:16</sys_updated_on>
         <table>sys_script_include</table>
-        <use_es_latest>true</use_es_latest>
+        <use_es_latest>false</use_es_latest>
     </sys_es_latest_script>
 </record_update>

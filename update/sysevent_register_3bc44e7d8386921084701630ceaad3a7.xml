@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sysevent_register">
+    <sysevent_register action="INSERT_OR_UPDATE">
+        <caller_access/>
+        <derived_priority>100</derived_priority>
+        <description/>
+        <event_name>x_neuronow.deleteThreads</event_name>
+        <fired_by>business rule</fired_by>
+        <priority>100</priority>
+        <queue/>
+        <suffix>deleteThreads</suffix>
+        <sys_class_name>sysevent_register</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2024-11-24 06:54:42</sys_created_on>
+        <sys_id>3bc44e7d8386921084701630ceaad3a7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_neuronow.deleteThreads</sys_name>
+        <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
+        <sys_update_name>sysevent_register_3bc44e7d8386921084701630ceaad3a7</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2024-11-24 06:54:42</sys_updated_on>
+        <table>x_neuronow_openai_conversation</table>
+    </sysevent_register>
+</record_update>

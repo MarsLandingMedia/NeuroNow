@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sys_rest_message_fn_parameters">
     <sys_rest_message_fn_parameters action="INSERT_OR_UPDATE">
         <name>threadId</name>
-        <rest_message_function display_value="runThread">13e3a2cd838ed2104af4f065eeaad3ec</rest_message_function>
+        <rest_message_function display_value="deleteThread">f8b42d758306921084701630ceaad3c5</rest_message_function>
         <sys_class_name>sys_rest_message_fn_parameters</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2024-11-22 01:16:15</sys_created_on>
-        <sys_id>ff44ea8d838ed2104af4f065eeaad312</sys_id>
-        <sys_mod_count>1</sys_mod_count>
+        <sys_created_on>2024-11-24 04:37:12</sys_created_on>
+        <sys_id>e675edf58306921084701630ceaad34a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
         <sys_name>threadId</sys_name>
         <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
         <sys_policy/>
         <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
-        <sys_update_name>sys_rest_message_fn_parameters_ff44ea8d838ed2104af4f065eeaad312</sys_update_name>
+        <sys_update_name>sys_rest_message_fn_parameters_e675edf58306921084701630ceaad34a</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-24 04:36:11</sys_updated_on>
+        <sys_updated_on>2024-11-24 04:37:12</sys_updated_on>
         <type>string</type>
         <value/>
     </sys_rest_message_fn_parameters>

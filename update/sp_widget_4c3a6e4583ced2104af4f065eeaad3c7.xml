@@ -163,6 +163,35 @@
 
     c.pullThreads();
     highLightAll();
+	
+		//materialize action not working so added this for now
+	$(document).ready(function() {
+		// Event for focus
+		$("textarea").focus(function() {
+			$('#chat-input-text').addClass("active");
+		});
+
+		// Event for blur
+		$("textarea").blur(function() {
+			// Check if the textarea is empty
+			if ($(this).val().trim() === "") {
+				$('#chat-input-text').removeClass("active");
+			} else {
+				$('#chat-input-text').addClass("active");
+			}
+		});
+
+		// On page load, check initial state
+		$("textarea").each(function() {
+			if ($(this).val().trim() !== "") {
+				$('#chat-input-text').addClass("active");
+			}
+		});
+	});
+
+
+	
+
 }
 ]]></client_script>
         <controller_as>c</controller_as>
@@ -268,7 +297,6 @@ div.card-panel{
 }
 
 #chat-input {
-  margin-top: 15px;
   font-size: large;
   color:#bbdefb !important;
 }
@@ -327,7 +355,7 @@ code[class*="language-"], pre[class*="language-"] {
         <description/>
         <docs/>
         <field_list/>
-        <has_preview>false</has_preview>
+        <has_preview>true</has_preview>
         <id>gpt-module</id>
         <internal>false</internal>
         <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
@@ -404,14 +432,14 @@ code[class*="language-"], pre[class*="language-"] {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2024-11-22 01:41:54</sys_created_on>
         <sys_id>4c3a6e4583ced2104af4f065eeaad3c7</sys_id>
-        <sys_mod_count>27</sys_mod_count>
+        <sys_mod_count>65</sys_mod_count>
         <sys_name>GPT Module</sys_name>
         <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
         <sys_policy/>
         <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
         <sys_update_name>sp_widget_4c3a6e4583ced2104af4f065eeaad3c7</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-23 03:27:09</sys_updated_on>
+        <sys_updated_on>2024-11-24 02:12:40</sys_updated_on>
         <template><![CDATA[<div class="widget-example chatgpt-widget">
 
   <h3 class="widget-title">{{data.portalTitle}}</h3>
@@ -429,14 +457,14 @@ code[class*="language-"], pre[class*="language-"] {
     </div>
   </div>
 
-
-
+  
+  
   <div class="row chat-focus-column">
     <form class="col m12">
       <div class="row">
-        <div class="chat-input-group input-field col s11">          
-          <label for="chat-input" id="chat-input-text" class="grey-text text-lighten-2">{{data.chatInputPlaceHolder}}</label>
+        <div class="chat-input-group input-field col s11">
           <textarea id="chat-input" class="materialize-textarea" ng-model="c.userInput"></textarea>
+          <label for="chat-input" id="chat-input-text" class="grey-text text-lighten-2">{{data.chatInputPlaceHolder}}</label>          
         </div>
         <div class="col s1">
           <button id="chat-submit" class="btn pulse waves-effect waves-light btn-small" type="submit" name="action" ng-click="c.createThread()">
@@ -448,19 +476,21 @@ code[class*="language-"], pre[class*="language-"] {
   </div>
 
   <!-- Prism JS -->
-  <script src="/prismJS.jsdbx"></script>
-  <link rel="stylesheet" href="/179ee763076a3110e42df61d7c1ed08b.spcssdbx">
+  <script src="/x_neuronow.prismJS.jsdbx"></script>
+  <link rel="stylesheet" href="/7291f0498386d2104af4f065eeaad31e.spcssdbx">
+  
 
   <!-- Prism Toolbar -->
-  <script src="/prismToolBarJS.jsdbx"></script>
-  <link rel="stylesheet" href="/2c5faf7b07aa7110e42df61d7c1ed0fa.spcssdbx">
+  <script src="/x_neuronow.prismToolBarJS.jsdbx"></script>
+  <link rel="stylesheet" href="/baa1f0498386d2104af4f065eeaad325.spcssdbx">
 
-  <!-- Prism Copy -->
-  <script src="/prismCopyJS.jsdbx"></script>
-  <link rel="stylesheet" href="/92cf6bbb07aa7110e42df61d7c1ed0aa.spcssdbx">
 
+  <!-- Prism Copy - scripted CSS -->
+  <script src="/x_neuronow.prismCopyJS.jsdbx"></script>
+  
   <!-- Prism Show Language -->
-  <script src="/prismLanguageJS.jsdbx"></script>
+  <script src="/x_neuronow.prismLanguageJS.jsdbx"></script>
+
 
 </div>
 ]]></template>

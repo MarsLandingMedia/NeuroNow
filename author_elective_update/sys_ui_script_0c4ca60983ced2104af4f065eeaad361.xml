@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_script">
+    <sys_ui_script action="DELETE">
+        <active>true</active>
+        <description/>
+        <global>false</global>
+        <ignore_in_now_experience>false</ignore_in_now_experience>
+        <name>x_neuronow.materializeJS</name>
+        <script><![CDATA[// Replace "yourFunctionName" with an appropriate function name
+
+(function() {
+	return {
+		// Define your Workspace functions here
+		yourFunctionName: function() {
+
+			// Workspace code goes here 
+
+		}
+	};
+})();
+
+// Define your core UI functions here
+function yourFunctionName() {
+
+	// Core UI code goes here
+
+}]]></script>
+        <script_name>materializeJS</script_name>
+        <sys_class_name>sys_ui_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2024-11-22 01:51:04</sys_created_on>
+        <sys_id>0c4ca60983ced2104af4f065eeaad361</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_neuronow.materializeJS</sys_name>
+        <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
+        <sys_update_name>sys_ui_script_0c4ca60983ced2104af4f065eeaad361</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2024-11-22 01:51:04</sys_updated_on>
+        <ui_type>0</ui_type>
+        <use_scoped_format>false</use_scoped_format>
+    </sys_ui_script>
+<sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</application>
+        <file_path/>
+        <instance_id>91a2511a1b010e18e84d2f8dee4bcb25</instance_id>
+        <instance_name>dev248071</instance_name>
+        <name>sys_ui_script_0c4ca60983ced2104af4f065eeaad361</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sys_ui_script"&gt;
+    &lt;sys_ui_script action="INSERT_OR_UPDATE"&gt;
+        &lt;active&gt;true&lt;/active&gt;
+        &lt;description/&gt;
+        &lt;global&gt;false&lt;/global&gt;
+        &lt;ignore_in_now_experience&gt;false&lt;/ignore_in_now_experience&gt;
+        &lt;name&gt;x_neuronow.materializeJS&lt;/name&gt;
+        &lt;script&gt;&lt;![CDATA[// Replace "yourFunctionName" with an appropriate function name
+
+(function() {
+	return {
+		// Define your Workspace functions here
+		yourFunctionName: function() {
+
+			// Workspace code goes here 
+
+		}
+	};
+})();
+
+// Define your core UI functions here
+function yourFunctionName() {
+
+	// Core UI code goes here
+
+}]]&gt;&lt;/script&gt;
+        &lt;script_name&gt;materializeJS&lt;/script_name&gt;
+        &lt;sys_class_name&gt;sys_ui_script&lt;/sys_class_name&gt;
+        &lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;
+        &lt;sys_created_on&gt;2024-11-22 01:51:04&lt;/sys_created_on&gt;
+        &lt;sys_id&gt;0c4ca60983ced2104af4f065eeaad361&lt;/sys_id&gt;
+        &lt;sys_mod_count&gt;0&lt;/sys_mod_count&gt;
+        &lt;sys_name&gt;x_neuronow.materializeJS&lt;/sys_name&gt;
+        &lt;sys_package display_value="NeuroNow" source="x_neuronow"&gt;5f95b97c834a5210223556e0deaad3b9&lt;/sys_package&gt;
+        &lt;sys_policy/&gt;
+        &lt;sys_scope display_value="NeuroNow"&gt;5f95b97c834a5210223556e0deaad3b9&lt;/sys_scope&gt;
+        &lt;sys_update_name&gt;sys_ui_script_0c4ca60983ced2104af4f065eeaad361&lt;/sys_update_name&gt;
+        &lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;
+        &lt;sys_updated_on&gt;2024-11-22 01:51:04&lt;/sys_updated_on&gt;
+        &lt;ui_type&gt;0&lt;/ui_type&gt;
+        &lt;use_scoped_format&gt;false&lt;/use_scoped_format&gt;
+    &lt;/sys_ui_script&gt;
+&lt;/record_update&gt;</payload>
+        <payload_hash>-616316069</payload_hash>
+        <record_name>x_neuronow.materializeJS</record_name>
+        <reverted_from/>
+        <source>7e2a31d18302121084701630ceaad3df</source>
+        <source_table>sys_upgrade_history</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2024-11-22 16:50:47</sys_created_on>
+        <sys_id>f53a35d18302121084701630ceaad3a6</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>19354c884970000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2024-11-22 16:50:47</sys_updated_on>
+        <type>UI Script</type>
+        <update_guid>b53a35d145021210408f8a2b6228b4a6</update_guid>
+        <update_guid_history>b53a35d145021210408f8a2b6228b4a6:-616316069</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2024-11-23 20:22:39</sys_created_on>
+        <sys_db_object display_value="" name="sys_ui_script">sys_ui_script</sys_db_object>
+        <sys_id>51a4e6b338cb43b0a42ec74bd77ac1a4</sys_id>
+        <sys_metadata>0c4ca60983ced2104af4f065eeaad361</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_neuronow.materializeJS</sys_name>
+        <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
+        <sys_scope_delete display_value="">aaf28a85e8954a2c9a10f786a5853904</sys_scope_delete>
+        <sys_update_name>sys_ui_script_0c4ca60983ced2104af4f065eeaad361</sys_update_name>
+        <sys_update_version display_value="sys_ui_script_0c4ca60983ced2104af4f065eeaad361">f53a35d18302121084701630ceaad3a6</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2024-11-23 20:22:39</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

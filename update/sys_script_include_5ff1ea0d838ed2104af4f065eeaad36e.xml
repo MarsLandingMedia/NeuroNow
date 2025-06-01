@@ -44,7 +44,6 @@ gpt.prototype = {
 			}
         };
 
-        this.openAiEncryptedKey = gs.getProperty('x_neuronow.gpt.openai.api.key');
         this.apiKey = this._getApiKey();
         this.assistantId = gs.getProperty('x_neuronow.gpt.openai.assistantid');
         this.toolCallId = '';
@@ -459,14 +458,8 @@ gs.info('jd test: response ' + JSON.stringify(response));
     },
 
     _getApiKey: function() {
-
-        var openAiEncryptedKey = this.openAiEncryptedKey;
-
-        if (openAiEncryptedKey && openAiEncryptedKey !== '' && openAiEncryptedKey !== 'undefined') {
             var e = new global.ScopedAppUtil();
-            return e.decrypt(openAiEncryptedKey);
-        }
-        return gs.error('Failed to retrieve API key');
+            return e.gptApiKeyDecrypt();
     },
 
     _sleep: function(milliseconds) {

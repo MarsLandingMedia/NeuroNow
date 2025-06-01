@@ -14,13 +14,57 @@ gptFunctions.prototype = {
     initialize: function() {
     },
 
-    _openAiFunction_get_user_data: function(name){
+    /**
+    * Creates a new user record in the sys_user table.
+    * @param {Object} user - The user object containing details to create the user.
+    * @param {string} user.first_name - User's first name.
+    * @param {string} user.last_name - User's last name.
+    * @param {string} user.user_name - Unique login/username for the user.
+    * @param {string} user.email - Email address of the user.
+    * @param {string} user.title - Job title of the user.
+    * @returns {string} - JSON string with the result of the user creation, including the sys_id or an error message.
+    */
+    _openAiFunction_create_user: function(user) {
+        var result = {};
 
+        // Check for existing user with the same username or email
+        var dupeCheck = new GlideRecord('sys_user');
+        var dupeCheck_q = 'user_name=' + user.user_name + '^ORemail=' + user.email;
+        dupeCheck.addQuery(dupeCheck_q);
+        dupeCheck.query();
+        if (dupeCheck.hasNext()) {
+            result.error = "User with this username or email already exists.";
+        } else {
+            var gr = new GlideRecord('sys_user');
+            gr.initialize();
+            gr.first_name = user.first_name;
+            gr.last_name = user.last_name;
+            gr.user_name = user.user_name;
+            gr.email = user.email;
+            gr.title = user.title;
+            var newSysId = gr.insert();
+
+            if (newSysId) {
+                result.message = "User created successfully.";
+                result.sys_id = newSysId;
+                result.user_name = user.user_name;
+            } else {
+                result.error = "User creation failed.";
+            }
+        }
+
+        // Manually escape quotes and encode to JSON
+        var toolResp = JSON.stringify(result).replace(/"/g, '\\"').replace(/'/g, "\\'");
+
+        return toolResp;
+    },
+
+    _openAiFunction_get_user_data: function(name){
         var result = {};
 
         // GlideRecord query to find user by name
         var gr = new GlideRecord('sys_user');
-        var gr_q = "nameLIKE"+name;
+        var gr_q = "nameLIKE"+name.full_name;
         gr.addQuery(gr_q);
         gr.query();
 
@@ -32,7 +76,7 @@ gptFunctions.prototype = {
             result.user_name = gr.getDisplayValue('user_name');
             result.title = gr.getDisplayValue('title');
             result.department = gr.getDisplayValue('department');
-			result.manager = gr.getDisplayValue('manager');
+            result.manager = gr.getDisplayValue('manager');
         } else {
             // Handling the case where no user is found
             result.error = "User not found";
@@ -42,7 +86,6 @@ gptFunctions.prototype = {
         var toolResp =  JSON.stringify(result).replace(/"/g, '\\"').replace(/'/g, "\\'");
 
         return toolResp;
-
     },
 
     type: 'gptFunctions'

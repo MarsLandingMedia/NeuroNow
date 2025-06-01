@@ -346,8 +346,7 @@ gs.info('jd test: response ' + JSON.stringify(response));
             this.toolCallId = toolCall.id;
             toolMsg.openAiFunction = toolCall['function'].name;
             var funcArgumentsRaw = toolCall['function'].arguments;
-            toolMsg.openAifunctionArguments = funcArgumentsRaw.replace(/.*:\s*"([^"]+)".*/, '$1');
-
+		    toolMsg.openAifunctionArguments = JSON.parse(funcArgumentsRaw);
             var toolResp = this._runTool(toolMsg);
             this._functionResponse(toolResp);
         }
@@ -425,7 +424,8 @@ gs.info('jd test: response ' + JSON.stringify(response));
 
         // Map of functions
         var openAiTools = {
-            "get_user_data": gptFunctions._openAiFunction_get_user_data
+            "get_user_data": gptFunctions._openAiFunction_get_user_data,
+			"create_user": gptFunctions._openAiFunction_create_user
         };
 
         var openAiFunction = toolMsg.openAiFunction;
@@ -434,6 +434,7 @@ gs.info('jd test: response ' + JSON.stringify(response));
         // Evaluate and call the function
         if (openAiTools[openAiFunction]) {
             resp = openAiTools[openAiFunction](openAifunctionArguments); // Calls functionOne in this case
+			
         } else {
             gs.info("No such function mapped for " + openAiFunction);
         }

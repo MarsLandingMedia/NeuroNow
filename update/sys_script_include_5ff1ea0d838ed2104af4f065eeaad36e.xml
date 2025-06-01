@@ -38,58 +38,59 @@ gpt.prototype = {
                 messageName: 'OpenAI',
                 methodName: 'functionResponse'
             },
-			'deleteThread': {
-				messageName: 'OpenAI',
-				methodName: 'deleteThread'
-			}
+            'deleteThread': {
+                messageName: 'OpenAI',
+                methodName: 'deleteThread'
+            }
         };
 
         this.apiKey = this._getApiKey();
         this.assistantId = gs.getProperty('x_neuronow.gpt.openai.assistantid');
         this.toolCallId = '';
-        this.threadId = '';
-        this.runId = '';
-        this.conversationId = '';
+        this.threadId = null;
+        this.runId = null;
+        this.conversationId = null;
+
 
     },
 
-	deleteConversationThreads: function(ConversationId){
-	
-	var threadIds = [];
-	var seenThreadIds = {}; // Object to track unique thread IDs
-	var gr = new GlideRecord('x_neuronow_openai_conversation_message');
-	var gr_q = 'conversation_id='+ConversationId;
-	gr.addQuery(gr_q);		
-	gr.query();
-	
-	while (gr.next()) {
-		gs.info('jd test script include: ' + gr.sys_id.toString());
-		var threadId = gr.getValue('thread_id');
-		if (!seenThreadIds[threadId]) {
-			seenThreadIds[threadId] = true;
-			threadIds.push(threadId);
-		}
-		gr.deleteRecord();
-	}
+    deleteConversationThreads: function(ConversationId) {
 
-	var thread = threadIds[0];
+        var threadIds = [];
+        var seenThreadIds = {}; // Object to track unique thread IDs
+        var gr = new GlideRecord('x_neuronow_openai_conversation_message');
+        var gr_q = 'conversation_id=' + ConversationId;
+        gr.addQuery(gr_q);
+        gr.query();
 
-	var restMessage = new sn_ws.RESTMessageV2(this.restMessages.deleteThread.messageName, this.restMessages.deleteThread.methodName);
-	restMessage.setStringParameterNoEscape('apiKey', 'Bearer ' + this.apiKey);
-	restMessage.setStringParameterNoEscape('threadId', thread);
+        while (gr.next()) {
+            gs.info('jd test script include: ' + gr.sys_id.toString());
+            var threadId = gr.getValue('thread_id');
+            if (!seenThreadIds[threadId]) {
+                seenThreadIds[threadId] = true;
+                threadIds.push(threadId);
+            }
+            gr.deleteRecord();
+        }
 
-	var response = restMessage.execute();
-	var responseBody = response.getBody();
-	var httpStatus = response.getStatusCode();
+        var thread = threadIds[0];
 
-	//we delete the conversation record last so that we have a reference until the end
-	var delConv = new GlideRecord('x_neuronow_openai_conversation');
-	delConv.get(ConversationId);
-	delConv.deleteRecord();
+        var restMessage = new sn_ws.RESTMessageV2(this.restMessages.deleteThread.messageName, this.restMessages.deleteThread.methodName);
+        restMessage.setStringParameterNoEscape('apiKey', 'Bearer ' + this.apiKey);
+        restMessage.setStringParameterNoEscape('threadId', thread);
 
-	// gs.info('Deleted ' + deletedCount + ' thread records with thread_id: ' + thread); 
+        var response = restMessage.execute();
+        var responseBody = response.getBody();
+        var httpStatus = response.getStatusCode();
 
-	},
+        //we delete the conversation record last so that we have a reference until the end
+        var delConv = new GlideRecord('x_neuronow_openai_conversation');
+        delConv.get(ConversationId);
+        delConv.deleteRecord();
+
+        // gs.info('Deleted ' + deletedCount + ' thread records with thread_id: ' + thread); 
+
+    },
 
 
     /**
@@ -117,7 +118,11 @@ gpt.prototype = {
             }
 
             if (initialUserThreadFound) {
-                threads.push({ message: message, role: role , date:date});
+                threads.push({
+                    message: message,
+                    role: role,
+                    date: date
+                });
             }
         }
 
@@ -139,7 +144,10 @@ gpt.prototype = {
         while (convGR.next()) {
             var conversationId = convGR.getUniqueValue();
             var threadId = this._getThreadIdByConversationId(conversationId);
-            conversations.push({ conversationId: conversationId, threadId: threadId });
+            conversations.push({
+                conversationId: conversationId,
+                threadId: threadId
+            });
         }
 
         if (conversations.length === 0) {
@@ -150,7 +158,10 @@ gpt.prototype = {
             convGR.insert();
             var newConversationId = convGR.getUniqueValue();
             // Assuming thread is created elsewhere or null if not created yet
-            conversations.push({ conversationId: newConversationId, threadId: null });
+            conversations.push({
+                conversationId: newConversationId,
+                threadId: null
+            });
         }
 
         this.conversationId = conversations[0].conversationId;
@@ -182,102 +193,89 @@ gpt.prototype = {
      * @param {string} msgValue - The message content.
      * @param {string} role - The message content.
      */
-    _createConversationMessage: function(msgValue,role) {
-
-        var now = new GlideDateTime();
-        // Subtract 30 seconds from the current time
-        now.addSeconds(-1);
-
+    _createConversationMessage: function(msgValue, role) {
         var messageGR = new GlideRecord('x_neuronow_openai_conversation_message');
-        var messageGR_q = "sys_created_on>=" + now + "^message=" + msgValue + "^role=" + role;
-        messageGR.addQuery(messageGR_q);
-        messageGR.query();
-        if(messageGR.next()){
-            //nothing
-        } else {
-            messageGR.initialize();
-            messageGR.message = msgValue;
-            messageGR.conversation_id = this.conversationId;
-            messageGR.role = role;
-            messageGR.assistant_id = this.assistantId;
-            messageGR.thread_id = this.threadId;
-            var msgId = messageGR.insert();
-        }
+        messageGR.initialize();
+        messageGR.message = msgValue;
+        messageGR.conversation_id = this.conversationId;
+        messageGR.role = role;
+        messageGR.assistant_id = this.assistantId;
+        messageGR.thread_id = this.threadId;
+        var msgId = messageGR.insert();
 
         return msgId;
     },
 
-    createThread: function(msg,conversationId,conversationThreadId) {
-
+    createThread: function(msg, conversationId, conversationThreadId) {
         this.toolCallId = '';
-        var addMsg;
+        this.threadId = conversationThreadId || '';
 
-        var apiKey = this.apiKey;
+        this._createConversationMessage(msg, 'user'); // Save the message immediately
 
-        //if we have a thread, use this, otherwise create a new one
-        if(conversationThreadId && conversationThreadId !== 'undefined' && conversationThreadId !== ''){
-
-            this.threadId = conversationThreadId;
-            addMsg = this._addMessage(msg);
-            return addMsg;
-
-        } else {
-
+        if (!this.threadId || this.threadId === 'undefined') {
             var restMessage = new sn_ws.RESTMessageV2(this.restMessages.createThread.messageName, this.restMessages.createThread.methodName);
-
-            restMessage.setStringParameterNoEscape('apiKey', 'Bearer ' + apiKey);
+            restMessage.setStringParameterNoEscape('apiKey', 'Bearer ' + this.apiKey);
             var response = restMessage.execute();
-            var responseBody = response.getBody();
-            var httpStatus = response.getStatusCode();
-
-            // Parse the response body to extract the thread ID
-            var responseObj = JSON.parse(responseBody);
-            var threadId = responseObj.id;
-
-            if (threadId) {
-                this.threadId = threadId;
+            var responseObj = JSON.parse(response.getBody());
+            if (responseObj.id) {
+                this.threadId = responseObj.id;
             }
-
-            addMsg = this._addMessage(msg);
         }
 
+        gs.eventQueue(
+            'x_neuronow.gpt.openai.async.run',
+            null,
+            JSON.stringify({
+                msg: msg,
+                conversationId: conversationId,
+                threadId: this.threadId
+            }),
+            this.apiKey
+        );
+
+        return {
+            status: 'submitted',
+            threadId: this.threadId,
+            conversationId: conversationId
+        };
     },
 
     _addMessage: function(msgValue) {
-
         var apiKey = this.apiKey;
 
         var dataObj = {
-            "role": "user", // Example role
+            "role": "user",
             "content": msgValue
         };
 
         var requestBody = JSON.stringify(dataObj);
 
-        var threadId = this.threadId;
         var restMessage = new sn_ws.RESTMessageV2(this.restMessages.addMessage.messageName, this.restMessages.addMessage.methodName);
-
         restMessage.setStringParameterNoEscape('apiKey', 'Bearer ' + apiKey);
-        restMessage.setStringParameterNoEscape('threadId', threadId);
-
-        // Set the request body
+        restMessage.setStringParameterNoEscape('threadId', this.threadId);
         restMessage.setRequestBody(requestBody);
 
         var response = restMessage.execute();
         var responseBody = response.getBody();
-        var httpStatus = response.getStatusCode();
-        // Parse the response body to extract the thread ID
         var responseObj = JSON.parse(responseBody);
-        var messageId = responseObj.id; // Replace with the actual path to the thread ID in the response
-				
-        if (messageId) {
-            this.messageId = messageId;
+
+        if (responseObj.id) {
+            this.messageId = responseObj.id;
         }
 
-        this._createConversationMessage(msgValue, 'user'); //add to the conversation database
-        var runThread = this._runThread();
-        return runThread;
+        return this._runThread(); // Continue GPT flow
+    },
 
+    /**
+     * Processes an OpenAI request asynchronously using a pre-saved message and thread.
+     * @param {Object} context - Object containing msg, threadId, and conversationId
+     */
+    processAsyncRequest: function(context) {
+        this.threadId = context.threadId;
+        this.conversationId = context.conversationId;
+
+        // Trigger the actual GPT request with msg
+        this._addMessage(context.msg);
     },
 
     _runThread: function() {
@@ -303,7 +301,7 @@ gpt.prototype = {
         var responseBody = response.getBody();
         var httpStatus = response.getStatusCode();
 
-gs.info('jd test: response ' + JSON.stringify(response));
+        gs.info('jd test: response ' + JSON.stringify(response));
 
         // Parse the response body to extract the thread ID
         var responseObj = JSON.parse(responseBody);
@@ -332,20 +330,22 @@ gs.info('jd test: response ' + JSON.stringify(response));
         var response = restMessage.execute();
         var responseBody = response.getBody();
         var httpStatus = response.getStatusCode();
-        
+
         // Parse the response body to extract the thread ID
         var responseObj = JSON.parse(responseBody);
         var runStatus = responseObj.status; // Replace with the actual path to the thread ID in the response
         var requiredActionType;
-        if(runStatus === 'requires_action'){requiredActionType = responseObj.required_action.type;}
+        if (runStatus === 'requires_action') {
+            requiredActionType = responseObj.required_action.type;
+        }
 
-        if((!toolCallId  || toolCallId === '' || toolCallId === undefined) && (runStatus === 'requires_action' && requiredActionType === 'submit_tool_outputs')){
+        if ((!toolCallId || toolCallId === '' || toolCallId === undefined) && (runStatus === 'requires_action' && requiredActionType === 'submit_tool_outputs')) {
             var toolCall = responseObj.required_action.submit_tool_outputs.tool_calls[0];
             var toolMsg = {};
             this.toolCallId = toolCall.id;
             toolMsg.openAiFunction = toolCall['function'].name;
             var funcArgumentsRaw = toolCall['function'].arguments;
-		    toolMsg.openAifunctionArguments = JSON.parse(funcArgumentsRaw);
+            toolMsg.openAifunctionArguments = JSON.parse(funcArgumentsRaw);
             var toolResp = this._runTool(toolMsg);
             this._functionResponse(toolResp);
         }
@@ -361,12 +361,10 @@ gs.info('jd test: response ' + JSON.stringify(response));
         var runId = this.runId;
 
         var dataObj = {
-            "tool_outputs": [
-                {
-                    "tool_call_id": this.toolCallId,
-                    "output": toolResp
-                }
-            ]
+            "tool_outputs": [{
+                "tool_call_id": this.toolCallId,
+                "output": toolResp
+            }]
         };
 
         var requestBody = JSON.stringify(dataObj);
@@ -394,8 +392,10 @@ gs.info('jd test: response ' + JSON.stringify(response));
     },
 
 
-    _getMessage: function(){
-
+    /**
+     * Retrieves the latest assistant message from OpenAI and stores it if not already recorded recently.
+     */
+    _getMessage: function() {
         var apiKey = this.apiKey;
         var threadId = this.threadId;
 
@@ -405,18 +405,31 @@ gs.info('jd test: response ' + JSON.stringify(response));
 
         var response = restMessage.execute();
         var responseBody = response.getBody();
-        var httpStatus = response.getStatusCode();
-
-        // Parse the response body to extract the thread ID
         var responseObj = JSON.parse(responseBody);
-        var msgValue = responseObj.data[0].content[0].text.value;
 
-        this._createConversationMessage(msgValue, 'assistant'); //add to the conversation database
-        return;
+        var msgValue = responseObj.data[0].content[0].text.value.trim();
 
+        // Define the deduplication window (e.g., 60 seconds)
+        var now = new GlideDateTime();
+        var recentThreshold = new GlideDateTime();
+        recentThreshold.addSeconds(-60); // adjust as needed
+
+        // Check for duplicate assistant message within last 60 seconds
+        var existing = new GlideRecord('x_neuronow_openai_conversation_message');
+        var existing_q = 'conversation_id=' + this.conversationId +
+            '^role=assistant^message=' + msgValue +
+            '^sys_created_on>=' + recentThreshold;
+        existing.addQuery(existing_q);
+        existing.query();
+
+        if (!existing.next()) {
+            this._createConversationMessage(msgValue, 'assistant');
+        } else {
+            gs.info('[GPT] Skipping assistant message: duplicate found in recent window.');
+        }
     },
 
-    _runTool: function (toolMsg){
+    _runTool: function(toolMsg) {
 
         var resp;
         var gptFunctions = new global.gptFunctions();
@@ -424,7 +437,7 @@ gs.info('jd test: response ' + JSON.stringify(response));
         // Map of functions
         var openAiTools = {
             "get_user_data": gptFunctions._openAiFunction_get_user_data,
-			"create_user": gptFunctions._openAiFunction_create_user
+            "create_user": gptFunctions._openAiFunction_create_user
         };
 
         var openAiFunction = toolMsg.openAiFunction;
@@ -433,7 +446,7 @@ gs.info('jd test: response ' + JSON.stringify(response));
         // Evaluate and call the function
         if (openAiTools[openAiFunction]) {
             resp = openAiTools[openAiFunction](openAifunctionArguments); // Calls functionOne in this case
-			
+
         } else {
             gs.info("No such function mapped for " + openAiFunction);
         }
@@ -442,7 +455,7 @@ gs.info('jd test: response ' + JSON.stringify(response));
 
     _callAndCheckStatus: function() {
         var status = this._runStatus();
-        var holding,terminate;
+        var holding, terminate;
 
         while (status === 'queued' || status === 'in_progress' || status === 'requires_action') {
             this._sleep(1000); // Sleep for 10 seconds (not recommended, see note below)
@@ -458,13 +471,13 @@ gs.info('jd test: response ' + JSON.stringify(response));
     },
 
     _getApiKey: function() {
-            var e = new global.ScopedAppUtil();
-            return e.gptApiKeyDecrypt();
+        var e = new global.ScopedAppUtil();
+        return e.gptApiKeyDecrypt();
     },
 
     _sleep: function(milliseconds) {
         var start = new Date().getTime();
-        while (new Date().getTime() < start + milliseconds){}
+        while (new Date().getTime() < start + milliseconds) {}
     },
 
     /**

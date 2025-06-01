@@ -419,7 +419,7 @@ gs.info('jd test: response ' + JSON.stringify(response));
     _runTool: function (toolMsg){
 
         var resp;
-        var gptFunctions = new x_neuronow.gptFunctions();
+        var gptFunctions = new global.gptFunctions();
 
         // Map of functions
         var openAiTools = {

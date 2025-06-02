@@ -13,7 +13,7 @@
 <script><![CDATA[var gpt = Class.create();
 gpt.prototype = {
 
-    initialize: function() {
+   initialize: function() {
         this.restMessages = {
             'createThread': {
                 messageName: 'OpenAI',
@@ -317,43 +317,67 @@ gpt.prototype = {
     },
 
     _runStatus: function() {
+    var apiKey = this.apiKey;
+    var threadId = this.threadId;
+    var runId = this.runId;
 
-        var apiKey = this.apiKey;
-        var threadId = this.threadId;
-        var runId = this.runId;
-        var toolCallId = this.toolCallId;
+    var restMessage = new sn_ws.RESTMessageV2(this.restMessages.runStatus.messageName, this.restMessages.runStatus.methodName);
+    restMessage.setStringParameterNoEscape('apiKey', 'Bearer ' + apiKey);
+    restMessage.setStringParameterNoEscape('threadId', threadId);
+    restMessage.setStringParameterNoEscape('runId', runId);
 
-        var restMessage = new sn_ws.RESTMessageV2(this.restMessages.runStatus.messageName, this.restMessages.runStatus.methodName);
-        restMessage.setStringParameterNoEscape('apiKey', 'Bearer ' + apiKey);
-        restMessage.setStringParameterNoEscape('threadId', threadId);
-        restMessage.setStringParameterNoEscape('runId', runId);
+    var response = restMessage.execute();
+    var responseObj = JSON.parse(response.getBody());
+    var runStatus = responseObj.status;
 
-        var response = restMessage.execute();
-        var responseBody = response.getBody();
-        var httpStatus = response.getStatusCode();
+    if (runStatus === 'requires_action' && responseObj.required_action.type === 'submit_tool_outputs') {
+        var toolCalls = responseObj.required_action.submit_tool_outputs.tool_calls;
+        var toolOutputs = [];
 
-        // Parse the response body to extract the thread ID
-        var responseObj = JSON.parse(responseBody);
-        var runStatus = responseObj.status; // Replace with the actual path to the thread ID in the response
-        var requiredActionType;
-        if (runStatus === 'requires_action') {
-            requiredActionType = responseObj.required_action.type;
-        }
+        for (var i = 0; i < toolCalls.length; i++) {
+            var toolCall = toolCalls[i];
+            var functionName = toolCall.function.name;
+            var functionArgs = JSON.parse(toolCall.function.arguments);
 
-        if ((!toolCallId || toolCallId === '' || toolCallId === undefined) && (runStatus === 'requires_action' && requiredActionType === 'submit_tool_outputs')) {
-            var toolCall = responseObj.required_action.submit_tool_outputs.tool_calls[0];
-            var toolMsg = {};
             this.toolCallId = toolCall.id;
-            toolMsg.openAiFunction = toolCall['function'].name;
-            var funcArgumentsRaw = toolCall['function'].arguments;
-            toolMsg.openAifunctionArguments = JSON.parse(funcArgumentsRaw);
-            var toolResp = this._runTool(toolMsg);
-            this._functionResponse(toolResp);
+
+            var toolResponse = this._runTool({
+                openAiFunction: functionName,
+                openAifunctionArguments: functionArgs
+            });
+
+            toolOutputs.push({
+                tool_call_id: toolCall.id,
+                output: toolResponse
+            });
         }
 
-        return runStatus;
+        this._functionResponseBatch(toolOutputs);
+    }
 
-    },
+    return runStatus;
+},
+
+_functionResponseBatch: function(toolOutputs) {
+    var apiKey = this.apiKey;
+    var threadId = this.threadId;
+    var runId = this.runId;
+
+    var dataObj = {
+        "tool_outputs": toolOutputs
+    };
+
+    var requestBody = JSON.stringify(dataObj);
+    var restMessage = new sn_ws.RESTMessageV2(this.restMessages.functionResponse.messageName, this.restMessages.functionResponse.methodName);
+    restMessage.setStringParameterNoEscape('apiKey', 'Bearer ' + apiKey);
+    restMessage.setStringParameterNoEscape('threadId', threadId);
+    restMessage.setStringParameterNoEscape('runId', runId);
+    restMessage.setRequestBody(requestBody);
+
+    var response = restMessage.execute();
+
+    return this._callAndCheckStatus();
+},
 
     _functionResponse: function(toolResp) {
 
@@ -413,7 +437,7 @@ gpt.prototype = {
         // Define the deduplication window (e.g., 60 seconds)
         var now = new GlideDateTime();
         var recentThreshold = new GlideDateTime();
-        recentThreshold.addSeconds(-60); // adjust as needed
+        recentThreshold.addSeconds(-10); // adjust as needed
 
         // Check for duplicate assistant message within last 60 seconds
         var existing = new GlideRecord('x_neuronow_openai_conversation_message');
@@ -439,7 +463,11 @@ gpt.prototype = {
         var openAiTools = {
             "get_user_data": gptFunctions._openAiFunction_get_user_data,
             "create_user": gptFunctions._openAiFunction_create_user,
-			"create_catalog_item": gptFunctions._openAiFunction_create_catalog_item
+			"create_catalog_item": gptFunctions._openAiFunction_create_catalog_item,
+			"update_catalog_item": gptFunctions._openAiFunction_update_catalog_item,
+			"get_category_by_name": gptFunctions._openAiFunction_get_category_by_name,
+			"get_catalog_item": gptFunctions._openAiFunction_get_catalog_item,
+			"list_catalog_categories": gptFunctions._openAiFunction_list_catalog_categories
         };
 
         var openAiFunction = toolMsg.openAiFunction;

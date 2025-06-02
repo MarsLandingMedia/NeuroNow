@@ -1,15 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
-    <sys_script_include action="INSERT_OR_UPDATE">
-        <access>public</access>
-        <active>true</active>
-        <api_name>x_neuronow.gpt</api_name>
-        <caller_access/>
-        <client_callable>false</client_callable>
-        <description/>
-        <mobile_callable>false</mobile_callable>
-        <name>gpt</name>
-        <sandbox_callable>false</sandbox_callable>
-        <script><![CDATA[var gpt = Class.create();
+<?xml version="1.0" encoding="UTF-8"?>
+<unload unload_date="2025-06-02 01:00:39">
+<sys_script_include action="INSERT_OR_UPDATE">
+<access>public</access>
+<active>true</active>
+<api_name>x_neuronow.gpt</api_name>
+<caller_access/>
+<client_callable>false</client_callable>
+<description/>
+<mobile_callable>false</mobile_callable>
+<name>gpt</name>
+<sandbox_callable>false</sandbox_callable>
+<script><![CDATA[var gpt = Class.create();
 gpt.prototype = {
 
     initialize: function() {
@@ -437,7 +438,8 @@ gpt.prototype = {
         // Map of functions
         var openAiTools = {
             "get_user_data": gptFunctions._openAiFunction_get_user_data,
-            "create_user": gptFunctions._openAiFunction_create_user
+            "create_user": gptFunctions._openAiFunction_create_user,
+			"create_catalog_item": gptFunctions._openAiFunction_create_catalog_item
         };
 
         var openAiFunction = toolMsg.openAiFunction;
@@ -445,8 +447,7 @@ gpt.prototype = {
 
         // Evaluate and call the function
         if (openAiTools[openAiFunction]) {
-            resp = openAiTools[openAiFunction](openAifunctionArguments); // Calls functionOne in this case
-
+            resp = openAiTools[openAiFunction](openAifunctionArguments);
         } else {
             gs.info("No such function mapped for " + openAiFunction);
         }
@@ -458,7 +459,7 @@ gpt.prototype = {
         var holding, terminate;
 
         while (status === 'queued' || status === 'in_progress' || status === 'requires_action') {
-            this._sleep(1000); // Sleep for 10 seconds (not recommended, see note below)
+            //this._sleep(1000); // Sleep for 10 seconds (not recommended, see note below)
             holding = this._runStatus();
 
             if (holding === 'completed') {
@@ -492,28 +493,17 @@ gpt.prototype = {
 
     type: 'gpt'
 };]]></script>
-        <sys_class_name>sys_script_include</sys_class_name>
-        <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2024-11-22 01:06:44</sys_created_on>
-        <sys_id>5ff1ea0d838ed2104af4f065eeaad36e</sys_id>
-        <sys_mod_count>74</sys_mod_count>
-        <sys_name>gpt</sys_name>
-        <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
-        <sys_policy>read</sys_policy>
-        <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
-        <sys_update_name>sys_script_include_5ff1ea0d838ed2104af4f065eeaad36e</sys_update_name>
-        <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-24 07:48:56</sys_updated_on>
-    </sys_script_include>
-    <sys_es_latest_script action="INSERT_OR_UPDATE">
-        <id>5ff1ea0d838ed2104af4f065eeaad36e</id>
-        <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2024-11-22 01:06:44</sys_created_on>
-        <sys_id>3822220d838ed2104af4f065eeaad377</sys_id>
-        <sys_mod_count>1</sys_mod_count>
-        <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-24 03:46:05</sys_updated_on>
-        <table>sys_script_include</table>
-        <use_es_latest>false</use_es_latest>
-    </sys_es_latest_script>
-</record_update>
+<sys_class_name>sys_script_include</sys_class_name>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2024-11-22 01:06:44</sys_created_on>
+<sys_id>5ff1ea0d838ed2104af4f065eeaad36e</sys_id>
+<sys_mod_count>79</sys_mod_count>
+<sys_name>gpt</sys_name>
+<sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
+<sys_policy>read</sys_policy>
+<sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
+<sys_update_name>sys_script_include_5ff1ea0d838ed2104af4f065eeaad36e</sys_update_name>
+<sys_updated_by>jdeluna</sys_updated_by>
+<sys_updated_on>2025-06-02 00:19:27</sys_updated_on>
+</sys_script_include>
+</unload>

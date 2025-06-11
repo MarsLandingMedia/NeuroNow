@@ -214,6 +214,9 @@ The object is processed in the corresponding ServiceNow skills function like so:
 ---
 
 ## Disclaimers
+---
+
+## Disclaimers
 
 <span style="color:#0366d6"><strong>Legal and Use Notice</strong></span>  
 This project is licensed under the <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GNU General Public License v3.0</a> and is a product of <strong>Mars Landing Media LLC</strong>. It is provided <em>solely for demonstration and educational purposes</em>.  
@@ -221,10 +224,12 @@ No warranties, maintenance, or official support of any kind are provided. Mars L
 
 <span style="color:#d73a49"><strong>ServiceNow® Notice</strong></span>  
 ServiceNow is a registered trademark of ServiceNow, Inc. This project is <strong>not affiliated with, endorsed by, or sponsored by ServiceNow</strong>. Any references to ServiceNow are intended for educational and integration demonstration purposes only.  
-Use of this project assumes that you remain in compliance with ServiceNow’s Terms of Service and applicable usage policies.
+Use of this project assumes that you remain in compliance with ServiceNow’s Terms of Service and applicable usage policies.  
+This project does not utilize `GlideRecordSecure`, and therefore does not enforce full ACL-based access controls. Data access in scripts assumes a trusted and sandboxed development environment, and may not meet ServiceNow security best practices.
 
 <span style="color:#6f42c1"><strong>OpenAI® Notice</strong></span>  
 This project uses the OpenAI API. OpenAI and ChatGPT are trademarks of OpenAI. This project is <strong>not affiliated with or endorsed by OpenAI</strong>. All API usage must comply with OpenAI's Terms of Use.
+
 
 
 

@@ -4,6 +4,29 @@ NeuroNow is a conversational AI integration for ServiceNow, powered by OpenAI’
 
 ---
 
+## How It Works
+
+NeuroNow connects ServiceNow to OpenAI's Assistants API using a structured tool-execution framework. Here's the flow:
+
+1. **User Enters Prompt in Service Portal**  
+   Through the GPT Portal UI widget, a user submits a natural language prompt (e.g., "Add a user named Bruce Wayne").
+
+2. **Assistant Matches the Prompt to a Tool**  
+   In OpenAI, a pre-configured assistant uses embedded functions (tools) to match prompts to specific function calls (e.g., `create_sys_user`).  
+   These tools must be installed in your OpenAI assistant — see **Project Extras**.
+
+3. **Tool Call Sent to ServiceNow**  
+   The matched tool call (including its arguments) is routed back to ServiceNow through the Assistants API and handled by NeuroNow logic.
+
+4. **ServiceNow Skill is Executed**  
+   NeuroNow maps the tool call to a matching script in the `u_neuronow_openai_skills` table (based on the function name).  
+   The script is executed using `gptSkillRunner`, and the result is returned to OpenAI and shown in the portal.
+
+5. **System Responds and Holds Context**  
+   Threads and messages are persisted so the LLM can continue the conversation with full context.
+
+---
+
 ## Features
 
 ### Conversational Intelligence with Context
@@ -62,21 +85,6 @@ Set the following properties in **System Properties** or use scripting to apply 
 | `x_neuronow.gpt.chat.input.placeholder` | string | Placeholder for the portal chat input |
 | `x_neuronow.gpt.openai.agent.name` | string | Display name shown for the AI |
 | `x_neuronow.gpt.portal.title` | string | Title used in the Service Portal header |
-
-### Step 3: REST Integration
-
-NeuroNow includes all necessary REST Messages and HTTP Methods under the `OpenAI` REST Message configuration.  
-These support all required OpenAI Assistant API operations, including:
-
-- `createThread`
-- `addMessage`
-- `runThread`
-- `runStatus`
-- `getMessage`
-- `functionResponse`
-- `deleteThread`
-
-No further configuration is needed aside from ensuring the system properties are set.
 
 ---
 
@@ -172,4 +180,28 @@ The assistant interprets this and generates a structured tool call like the foll
     "email": "bruce.wayne@wayneenterprises.com",
     "title": "CEO"
   }
-}
+} ```
+
+``` javascript
+(function() {
+    var user = new GlideRecord('sys_user');
+    user.initialize();
+    user.first_name = input.first_name;
+    user.last_name = input.last_name;
+    user.user_name = input.user_name;
+
+    if (input.email)
+        user.email = input.email;
+
+    if (input.title)
+        user.title = input.title;
+
+    user.insert();
+
+    return JSON.stringify({
+        success: true,
+        sys_id: user.getUniqueValue(),
+        message: "User '" + input.first_name + " " + input.last_name + "' created successfully."
+    });
+})(); ```
+

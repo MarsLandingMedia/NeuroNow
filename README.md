@@ -1,3 +1,6 @@
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACAAAAADCCAYAAADdaCLoAAAQAElEQVR4AeydCdxM1RvHnyn7FsoSCoksiaISEmVLm4qoEO2FUAmVqH9podK+SFSSSLSnJKVFqGihQlJayK4Qqf/zm6jX6533nTtzzrnL/HzOcWfuPedZvve+M3Pvec5z9hKRKVo/ZxUyEDLg3wGvAV4DvAZ4DfAa4DXAa4DXAK8BXgO8BiJ6DfCel/e8vAZ4DfAa4DXAa4DXAK8BXgO8BngN8Brg..." alt="Mars Mode Gaming Logo" style="max-width:100%; height:auto;" />
+
+
 # NeuroNow
 
 NeuroNow is a conversational AI integration for ServiceNow, powered by OpenAI’s API. It enables developers and admins to interact with ServiceNow through natural language to automate processes, query data, build content, and populate records.

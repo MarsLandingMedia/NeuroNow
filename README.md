@@ -1,71 +1,71 @@
 # NeuroNow
 
-**NeuroNow** is a fully integrated ServiceNow-based assistant framework powered by the OpenAI Assistant API. It allows ServiceNow developers to create conversational AI agents with contextual memory, tool usage, and record interaction capabilities—directly inside the Now Platform.
+NeuroNow is a conversational AI integration for ServiceNow, powered by OpenAI’s Assistants API. It enables developers and admins to interact with ServiceNow through natural language to automate processes, query data, build content, and populate records.
 
 ---
 
-## Features & Capabilities
+## Features
 
-NeuroNow offers advanced automation through natural language and function-calling, including:
+### Conversational Intelligence with Context
+- Persistent threads and messages stored in custom tables.
+- User identity and session context retained throughout multi-step interactions.
 
-- Persistent Conversations: Each user’s interaction is retained and loaded using thread memory.
-- Function Calling (Tool Use): Automatically executes mapped ServiceNow functions when the LLM determines they are required.
-- Skill Execution: Uses the `gptSkillRunner` to dynamically evaluate JavaScript-based tools defined in the `u_neuronow_openai_skills` table.
-- Reference Field Assistance:
-  - Step-by-step guidance when selecting values for reference fields.
-  - Shows available options from the referenced table.
-  - Can resolve ambiguous instructions using fuzzy matching.
-- Data Traversal & Reviews:
-  - Can access and review records in any table.
-  - Supports code reviews for Script Includes and other development artifacts.
-- Multi-record Creation:
-  - Populate multiple `sys_user` records using vague or natural descriptions.
-  - Accurately assigns reference fields (e.g., `cmn_location`).
-- Instructional Context Awareness:
-  - Interprets advanced prompts like “choose 5 Marvel superheroes” and executes actions accordingly.
-  - Maintains prior context between messages.
-- Queued Async Execution:
-  - Async logic can be adapted to a dedicated queue for scalability.
-- Tool Extensibility:
-  - Developers can expand tools to include catalog item creation, workflow building, page widget generation, and more.
+### Tool (Skill) Execution via Assistant API
+- Dynamically runs functions defined in the `u_neuronow_openai_skills` table.
+- Supports input/output chaining via `submit_tool_outputs`.
+- Tools are validated for security and scoped execution.
 
-NeuroNow is best paired with OpenAI models like GPT-4.1 mini or later for performance and contextual quality.
+### Reference Field Resolution
+- Step-by-step guidance for selecting and resolving reference values.
+- Supports fuzzy matching and exploration of options before committing.
+- Demonstrates intelligent behavior even with vague prompts.
 
----
+### Record Traversal & Code Review
+- Ask the system to review or explain Script Includes or other code records.
+- Readable feedback and structured suggestions are returned in real time.
 
-## Getting Started
+### Advanced Record Querying
+- Use natural prompts to query any table and return custom field lists.
+- Supports both encoded query and field:value formats.
+- Results can be returned in raw or display value format.
 
-### Step 1: Install NeuroNow
+### Structured Async Processing
+- Asynchronous execution supported via Event system (`x_neuronow.gpt.openai.async.run`).
+- Good candidate for scale-out solutions using Queue-based workers.
 
-Install the scoped application via update set or from source control. It includes:
+### Multi-User & Dynamic Record Creation
+- Add multiple users or records simultaneously.
+- Use vague criteria ("Pick 5 Marvel heroes") and let the LLM generate values.
 
-- Script Includes
-- Tables
-- Service Portal
-- Widgets
-- Supporting REST integrations
-- Sample data
+### Developer-Oriented Use Cases
+- Create catalog items, update widgets, or review code with prompts.
+- Explore system fields, schema, and record content dynamically.
+- Easily extensible with additional skill records and assistant tools.
 
 ---
+
+## Installation
+
+### Step 1: Import the Application
+
+- Install NeuroNow via update set or clone this repository into a ServiceNow scoped app.
+- Ensure all script includes, tables, and widgets are present and active.
 
 ### Step 2: Configure System Properties
 
-You must configure the following properties under **System Properties > All**:
+Set the following properties in **System Properties** or use scripting to apply them.
 
 | Property | Type | Description |
 |---------|------|-------------|
-| `x_neuronow.gpt.openai.api.key` | Password | Your OpenAI API key |
-| `x_neuronow.gpt.openai.assistantid` | String | The Assistant ID from your OpenAI workspace |
-| `x_neuronow.gpt.openai.agent.name` | String | Display name for your agent |
-| `x_neuronow.gpt.chat.input.placeholder` | String | Placeholder text in chat input |
-| `x_neuronow.gpt.portal.title` | String | Title shown at the top of the Service Portal interface |
+| `x_neuronow.gpt.openai.api.key` | password | Your OpenAI API Key |
+| `x_neuronow.gpt.openai.assistantid` | string | Your Assistant ID |
+| `x_neuronow.gpt.chat.input.placeholder` | string | Placeholder for the portal chat input |
+| `x_neuronow.gpt.openai.agent.name` | string | Display name shown for the AI |
+| `x_neuronow.gpt.portal.title` | string | Title used in the Service Portal header |
 
----
+### Step 3: REST Message Setup
 
-### Step 3: REST Integration
-
-NeuroNow includes all necessary REST Messages and HTTP Methods under the `OpenAI` REST Message configuration.  
-These support all required OpenAI Assistant API operations, including:
+NeuroNow includes a REST Message named `OpenAI` with preconfigured methods:
 
 - `createThread`
 - `addMessage`
@@ -75,70 +75,100 @@ These support all required OpenAI Assistant API operations, including:
 - `functionResponse`
 - `deleteThread`
 
-No additional setup is required for the REST configuration itself.
+No further configuration is needed aside from ensuring the system properties are set.
 
-To fully enable the project, ensure the following System Properties are populated:
+---
 
-- `x_neuronow.gpt.openai.api.key` — your OpenAI API Key  
-- `x_neuronow.gpt.openai.assistantid` — your OpenAI Assistant ID
+## Assets & Artifacts
+
+### Script Includes
+
+- `x_neuronow.gpt` — Orchestrator for thread/message/run logic
+- `gptFunctions` — Server-side tool functions callable by the assistant
+- `gptSkillRunner` — Executes stored skills dynamically
+- `ScopedAppUtil` — Global utility (requires [Project Extras](#project-extras))
+
+### Script Action
+
+- `x_neuronow.gpt.openai.async.run` — Executes `processAsyncRequest` for queued async handling
+
+### Tables
+
+- `x_neuronow_openai_conversation`
+- `x_neuronow_openai_conversation_message`
+- `u_neuronow_openai_skills` — Tool definition and execution metadata
+
+### Service Portal
+
+- Portal: **GPT**
+- Page: **gpt_ui**
+- Widget: **GPT Module**
+
+### Custom Fields
+
+- `u_test_field` on `sys_user` (reference to `cmn_location`)  
+  Used for testing the LLM's ability to populate references accurately.
 
 ---
 
 ## Project Extras
 
-This project includes additional optional components to enhance developer experience:
+Additional content such as:
 
-- `ScopedAppUtil` (global script include) — decrypts API keys.  
-  Ensure the “Project Extras” are installed to access this.  
-  [ScopedAppUtil Source (placeholder)](#)
-- Sample `u_neuronow_openai_skills` — starter function scripts you can modify or extend.
-- Sample assistant JSON + prompt files — upload these to OpenAI to match your instance tools.
-- Fix script — clears the UI and thread data to reset the conversation.
-- Custom field: `u_test_field` (on `sys_user`) — reference to `cmn_location`, useful for testing multi-user inserts via AI.
+- Predefined tools and assistant JSON
+- Sample system prompts
+- Global Script Include `ScopedAppUtil`
+- Fix scripts to reset portal threads
 
----
-
-## Key Script Includes
-
-| Name | Description |
-|------|-------------|
-| `x_neuronow.gpt` | Core logic that manages conversations, threads, and REST calls |
-| `global.gptFunctions` | Utility functions for resolving fields, querying tables, etc. |
-| `global.gptSkillRunner` | Dynamically executes user-defined skill scripts |
-| `global.ScopedAppUtil` | (Extras) Decrypts secure properties like API key |
+Available in a separate repository:  
+**[NeuroNow Extras Repository](https://github.com/your-org/neuronow-extras)**
 
 ---
 
-## Event-Driven Architecture
+## Example Prompt and Tool Call
 
-NeuroNow handles async conversation flow using event queues:
+> **Prompt:**  
+> "Add a user to the sys_user table with the real name Bruce Wayne. Use the username bwayne, title him CEO, and set the email to bruce.wayne@wayneenterprises.com."
 
-- `x_neuronow.gpt.openai.async.run` (Script Action)
-  - Executes when an OpenAI message is queued
-  - Triggers GPT function calling and response generation
+The assistant interprets this and generates a structured tool call like the following:
 
-Consider replacing or supplementing this with a custom Scheduled Job Queue or Flow for high-throughput needs.
-
----
-
-## Tips for Developers
-
-Here are a few ideas to expand on NeuroNow:
-
-- Auto-generate catalog items using conversational definitions.
-- Enable conversational creation of Knowledge Base articles or Flow Designer actions.
-- Build new Service Portal widgets that dynamically hook into other LLM-driven flows.
-- Extend the `u_neuronow_openai_skills` table with validated testing frameworks to simulate data population logic.
-
----
-
-## Example Use Case
-
-```text
-"Add 3 users from Marvel comics, randomly pick them, and place them in different office locations. Set their test field based on their city."
-
-→ NeuroNow will:
-- Choose valid character names
-- Create 3 sys_user records
-- Assign each a unique cmn_location reference
-- Populate custom reference fields with valid display values
+```json
+{
+  "type": "function_call",
+  "name": "create_sys_user",
+  "description": "Creates a new user in the sys_user table in ServiceNow.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "first_name": {
+        "type": "string",
+        "description": "The user's first name."
+      },
+      "last_name": {
+        "type": "string",
+        "description": "The user's last name."
+      },
+      "user_name": {
+        "type": "string",
+        "description": "The user's login name."
+      },
+      "email": {
+        "type": "string",
+        "description": "The user's email address."
+      },
+      "title": {
+        "type": "string",
+        "description": "The user's job title."
+      }
+    },
+    "required": ["first_name", "last_name", "user_name"],
+    "additionalProperties": false
+  },
+  "arguments": {
+    "first_name": "Bruce",
+    "last_name": "Wayne",
+    "user_name": "bwayne",
+    "email": "bruce.wayne@wayneenterprises.com",
+    "title": "CEO"
+  }
+}

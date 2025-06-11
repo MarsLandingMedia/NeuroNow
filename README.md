@@ -6,7 +6,7 @@ NeuroNow is a conversational AI integration for ServiceNow, powered by OpenAI’
 
 ## How It Works
 
-NeuroNow connects ServiceNow to OpenAI's Assistants API using a structured tool-execution framework. Here's the flow:
+NeuroNow connects ServiceNow to OpenAI's Assistants using a structured tool-execution framework. Here's the flow:
 
 1. **User Enters Prompt in Service Portal**  
    Through the GPT Portal UI widget, a user submits a natural language prompt (e.g., "Add a user named Bruce Wayne").
@@ -16,7 +16,7 @@ NeuroNow connects ServiceNow to OpenAI's Assistants API using a structured tool-
    These tools must be installed in your OpenAI assistant — see **Project Extras**.
 
 3. **Tool Call Sent to ServiceNow**  
-   The matched tool call (including its arguments) is routed back to ServiceNow through the Assistants API and handled by NeuroNow logic.
+   The matched tool call (including its arguments) is routed back to ServiceNow through the API and handled by NeuroNow logic.
 
 4. **ServiceNow Skill is Executed**  
    NeuroNow maps the tool call to a matching script in the `u_neuronow_openai_skills` table (based on the function name).  
@@ -33,7 +33,7 @@ NeuroNow connects ServiceNow to OpenAI's Assistants API using a structured tool-
 - Persistent threads and messages stored in custom tables.
 - User identity and session context retained throughout multi-step interactions.
 
-### Tool (Skill) Execution via Assistant API
+### Tool (Skill) Execution via API
 - Dynamically runs functions defined in the `u_neuronow_openai_skills` table.
 - Supports input/output chaining via `submit_tool_outputs`.
 - Tools are validated for security and scoped execution.
@@ -71,7 +71,7 @@ NeuroNow connects ServiceNow to OpenAI's Assistants API using a structured tool-
 
 ### Step 1: Import the Application
 
-- Install NeuroNow via update set or clone this repository into a ServiceNow scoped app.
+- Install NeuroNow by cloning this repository into a ServiceNow scoped app.
 - Ensure all script includes, tables, and widgets are present and active.
 
 ### Step 2: Configure System Properties

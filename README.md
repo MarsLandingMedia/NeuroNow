@@ -180,7 +180,7 @@ The assistant interprets this and generates a structured tool call like the foll
     "email": "bruce.wayne@wayneenterprises.com",
     "title": "CEO"
   }
-}
+} ```
 
 ```javascript
 (function() {

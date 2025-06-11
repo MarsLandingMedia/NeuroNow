@@ -84,13 +84,13 @@ NeuroNow connects ServiceNow to OpenAI's Assistants using a structured tool-exec
 
 Set the following properties in **System Properties** or use scripting to apply them.
 
-| Property | Type | Description |
+| Property | Type | Description | Notes |
 |---------|------|-------------|
-| `x_neuronow.gpt.openai.api.key` | password | Your OpenAI API Key | <b>(this will be visible in the event queue...for now...unless you change this yourself)</b>
-| `x_neuronow.gpt.openai.assistantid` | string | Your Assistant ID |
-| `x_neuronow.gpt.chat.input.placeholder` | string | Placeholder for the portal chat input |
-| `x_neuronow.gpt.openai.agent.name` | string | Display name shown for the AI |
-| `x_neuronow.gpt.portal.title` | string | Title used in the Service Portal header |
+| `x_neuronow.gpt.openai.api.key` | password | Your OpenAI API Key | <b>This will be visible in the event queue...for now...unless you change this yourself.</b>|
+| `x_neuronow.gpt.openai.assistantid` | string | Your Assistant ID ||
+| `x_neuronow.gpt.chat.input.placeholder` | string | Placeholder for the portal chat input ||
+| `x_neuronow.gpt.openai.agent.name` | string | Display name shown for the AI ||
+| `x_neuronow.gpt.portal.title` | string | Title used in the Service Portal header ||
 
 ---
 

@@ -182,7 +182,7 @@ The assistant interprets this and generates a structured tool call like the foll
   }
 } ```
 
-``` javascript
+```javascript
 (function() {
     var user = new GlideRecord('sys_user');
     user.initialize();

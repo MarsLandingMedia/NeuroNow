@@ -80,7 +80,12 @@ NeuroNow connects ServiceNow to OpenAI's Assistants using a structured tool-exec
 - Install NeuroNow by cloning this repository into a ServiceNow scoped app.
 - Ensure all script includes, tables, and widgets are present and active.
 
-### Step 2: Configure System Properties
+### Step 2: Install ServiceNow Functions update set from the NeuroNow Extras repo. ** IT WILL NOT WORK WITHOUT THESE **
+- **[NeuroNow Extras](https://github.com/MarsLandingMedia/NeuroNow-Extras)**
+- You can build your own, but on intial install the portal will not work if these are not there.
+- ** YOU MUST HAVE CORESPONDING OPENAI FUNCTIONS/TOOLS THAT CALL YOUR SERVICENOW FUNCTIONS. ** These are also included in the 'extra' package. 
+
+### Step 3: Configure System Properties
 
 Set the following properties in **System Properties** or use scripting to apply them.
 

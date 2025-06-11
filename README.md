@@ -207,3 +207,16 @@ The object is processed in the corresponding ServiceNow skills function like so:
 })();
 ```
 
+---
+
+## Disclaimers
+
+<span style="color:#0366d6"><strong>Legal and Use Notice</strong></span>  
+This project is licensed under the <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GNU General Public License v3.0</a> and is a product of <strong>Mars Landing Media LLC</strong>. It is provided <em>solely for demonstration and educational purposes</em>.
+
+<span style="color:#d73a49"><strong>ServiceNow® Notice</strong></span>  
+ServiceNow is a registered trademark of ServiceNow, Inc. This project is <strong>not affiliated with, endorsed by, or sponsored by ServiceNow</strong>. Any references to ServiceNow are intended for educational and integration demonstration purposes only.
+
+<span style="color:#6f42c1"><strong>OpenAI® Notice</strong></span>  
+This project uses the OpenAI API. OpenAI and ChatGPT are trademarks of OpenAI. This project is <strong>not affiliated with or endorsed by OpenAI</strong>. All API usage must comply with <a href="https://openai.com/policies/terms-of-use" target="_blank">OpenAI's Terms of Use</a>.
+

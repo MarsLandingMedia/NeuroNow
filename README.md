@@ -88,9 +88,9 @@ Set the following properties in **System Properties** or use scripting to apply 
 |----------------------------------------------|----------|------------------------------------------|-----------------------------------------------------------------------|
 | `x_neuronow.gpt.openai.api.key`              | password | Your OpenAI API Key                      | **This will be visible in the event queue...for now...unless you change this yourself.** |
 | `x_neuronow.gpt.openai.assistantid`          | string   | Your Assistant ID                        |                                                                       |
-| `x_neuronow.gpt.chat.input.placeholder`      | string   | Placeholder for the portal chat input    |                                                                       |
-| `x_neuronow.gpt.openai.agent.name`           | string   | Display name shown for the AI            |                                                                       |
-| `x_neuronow.gpt.portal.title`                | string   | Title used in the Service Portal header  |                                                                       |
+| `x_neuronow.gpt.chat.input.placeholder`      | string   | Placeholder for the portal chat input    | Already set by default.                                                                      |
+| `x_neuronow.gpt.openai.agent.name`           | string   | Display name shown for the AI            | Already set by default.                                                                      |
+| `x_neuronow.gpt.portal.title`                | string   | Title used in the Service Portal header  | Already set by default.                                                                     |
 
 
 ---

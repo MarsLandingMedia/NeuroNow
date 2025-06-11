@@ -95,7 +95,7 @@ Set the following properties in **System Properties** or use scripting to apply 
 - `x_neuronow.gpt` — Orchestrator for thread/message/run logic
 - `gptFunctions` — Server-side tool functions callable by the assistant
 - `gptSkillRunner` — Executes stored skills dynamically
-- `ScopedAppUtil` — Global utility (requires [Project Extras](#project-extras))
+- `ScopedAppUtil` — Global utility (requires [NeuroNow Extras](https://github.com/MarsLandingMedia/NeuroNow-Extras))
 
 ### Script Action
 
@@ -120,7 +120,7 @@ Set the following properties in **System Properties** or use scripting to apply 
 
 ---
 
-## Project Extras
+## NeuroNow/Project Extras
 
 Additional content such as:
 
@@ -130,7 +130,7 @@ Additional content such as:
 - ServiceNow skills records to match the OpenAi tools/functions.
 
 Available in a separate repository:  
-**[NeuroNow Extras Repository](https://github.com/your-org/neuronow-extras)**
+**[NeuroNow Extras](https://github.com/MarsLandingMedia/NeuroNow-Extras)**
 
 ---
 

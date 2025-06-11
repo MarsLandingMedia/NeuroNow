@@ -221,10 +221,10 @@ No warranties, maintenance, or official support of any kind are provided. Mars L
 
 <span style="color:#d73a49"><strong>ServiceNow® Notice</strong></span>  
 ServiceNow is a registered trademark of ServiceNow, Inc. This project is <strong>not affiliated with, endorsed by, or sponsored by ServiceNow</strong>. Any references to ServiceNow are intended for educational and integration demonstration purposes only.  
-Use of this project assumes that you remain in compliance with <a href="https://www.servicenow.com/company/legal/terms.html" target="_blank">ServiceNow’s Terms of Service</a> and applicable usage policies.
+Use of this project assumes that you remain in compliance with ServiceNow’s Terms of Service and applicable usage policies.
 
 <span style="color:#6f42c1"><strong>OpenAI® Notice</strong></span>  
-This project uses the OpenAI API. OpenAI and ChatGPT are trademarks of OpenAI. This project is <strong>not affiliated with or endorsed by OpenAI</strong>. All API usage must comply with <a href="https://openai.com/policies/terms-of-use" target="_blank">OpenAI's Terms of Use</a>.
+This project uses the OpenAI API. OpenAI and ChatGPT are trademarks of OpenAI. This project is <strong>not affiliated with or endorsed by OpenAI</strong>. All API usage must comply with OpenAI's Terms of Use.
 
 
 

@@ -229,7 +229,7 @@ Use of this project assumes that you remain in compliance with ServiceNow’s Te
 <span style="color:#6f42c1"><strong>OpenAI® Notice</strong></span>  
 This project uses the OpenAI API. OpenAI and ChatGPT are trademarks of OpenAI. This project is <strong>not affiliated with or endorsed by OpenAI</strong>. All API usage must comply with OpenAI's Terms of Use.
 
-<span style="color:#6f42c1"><strong>GlideRecordSecure Not Used</strong></span> <br>
+<span style="color:#6f42c1"><strong>GlideRecordSecure Notice</strong></span><br>
 This project does not utilize `GlideRecordSecure`, and therefore does not enforce full ACL-based access controls. Data access in scripts assumes a trusted and sandboxed development environment, and may not meet ServiceNow security best practices.
 
 

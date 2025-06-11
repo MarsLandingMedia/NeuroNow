@@ -13,7 +13,7 @@ NeuroNow connects ServiceNow to OpenAI's Assistants using a structured tool-exec
 
 2. **Assistant Matches the Prompt to a Tool**  
    In OpenAI, a pre-configured assistant uses embedded functions (tools) to match prompts to specific function calls (e.g., `create_sys_user`).  
-   These tools must be installed in your OpenAI assistant — see **Project Extras**.
+   These tools must be installed in your OpenAI assistant — see **[NeuroNow Extras](https://github.com/MarsLandingMedia/NeuroNow-Extras)**.
 
 3. **Tool Call Sent to ServiceNow**  
    The matched tool call (including its arguments) is routed back to ServiceNow through the API and handled by NeuroNow logic.

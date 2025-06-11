@@ -139,7 +139,7 @@ Available in a separate repository:
 > **Prompt:**  
 > "Add a user to the sys_user table with the real name Bruce Wayne. Use the username bwayne, title him CEO, and set the email to bruce.wayne@wayneenterprises.com."
 
-The assistant interprets this and generates a structured tool call like the following:
+The assistant interprets this and generates a structured OpenAi tool call like the following:
 
 ```json
 {
@@ -182,7 +182,7 @@ The assistant interprets this and generates a structured tool call like the foll
   }
 } 
 ```
-
+The object is processed in the corresponding ServiceNow skills function like so:
 ```javascript
 (function() {
     var user = new GlideRecord('sys_user');

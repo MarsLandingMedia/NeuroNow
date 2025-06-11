@@ -63,9 +63,10 @@ Set the following properties in **System Properties** or use scripting to apply 
 | `x_neuronow.gpt.openai.agent.name` | string | Display name shown for the AI |
 | `x_neuronow.gpt.portal.title` | string | Title used in the Service Portal header |
 
-### Step 3: REST Message Setup
+### Step 3: REST Integration
 
-NeuroNow includes a REST Message named `OpenAI` with preconfigured methods:
+NeuroNow includes all necessary REST Messages and HTTP Methods under the `OpenAI` REST Message configuration.  
+These support all required OpenAI Assistant API operations, including:
 
 - `createThread`
 - `addMessage`

@@ -180,7 +180,7 @@ The assistant interprets this and generates a structured tool call like the foll
     "email": "bruce.wayne@wayneenterprises.com",
     "title": "CEO"
   }
-} ```
+}
 
 ```javascript
 (function() {
@@ -203,5 +203,6 @@ The assistant interprets this and generates a structured tool call like the foll
         sys_id: user.getUniqueValue(),
         message: "User '" + input.first_name + " " + input.last_name + "' created successfully."
     });
-})(); ```
+})();
+
 

@@ -4,6 +4,12 @@ NeuroNow is a conversational AI integration for ServiceNow, powered by OpenAI’
 
 ---
 
+## Note
+
+You will require an OpenAi account and you can put as little as $5 USD on it for a few days worth of heavy use....maybe more. In the last 30 days I've spent $7.75 for 16.5M input tokens. That's me testing.
+
+---
+
 ## How It Works
 
 NeuroNow connects ServiceNow to OpenAI's Assistants using a structured tool-execution framework. Here's the flow:

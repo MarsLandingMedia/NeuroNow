@@ -86,7 +86,7 @@ Set the following properties in **System Properties** or use scripting to apply 
 
 | Property | Type | Description |
 |---------|------|-------------|
-| `x_neuronow.gpt.openai.api.key` | password | Your OpenAI API Key |
+| `x_neuronow.gpt.openai.api.key` | password | Your OpenAI API Key | <b>(this will be visible in the event queue...for now...unless you change this yourself)</b>
 | `x_neuronow.gpt.openai.assistantid` | string | Your Assistant ID |
 | `x_neuronow.gpt.chat.input.placeholder` | string | Placeholder for the portal chat input |
 | `x_neuronow.gpt.openai.agent.name` | string | Display name shown for the AI |
@@ -218,15 +218,20 @@ The object is processed in the corresponding ServiceNow skills function like so:
 
 <span style="color:#0366d6"><strong>Legal and Use Notice</strong></span>  
 This project is licensed under the <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GNU General Public License v3.0</a> and is a product of <strong>Mars Landing Media LLC</strong>. It is provided <em>solely for demonstration and educational purposes</em>.  
+
 No warranties, maintenance, or official support of any kind are provided. Mars Landing Media LLC assumes no responsibility for any damages, loss of data, or operational disruption resulting from incorrect, inappropriate, or enterprise use of this product or any part of it.  
 This code is not production-ready and may contain errors or incomplete logic. It is intended to serve as a reference or starting point only. Use this solution at your own risk.
 
+
 <span style="color:#d73a49"><strong>ServiceNow® Notice</strong></span>  
 ServiceNow is a registered trademark of ServiceNow, Inc. This project is <strong>not affiliated with, endorsed by, or sponsored by ServiceNow</strong>. Any references to ServiceNow are intended for educational and integration demonstration purposes only.  
+
 Use of this project assumes that you remain in compliance with ServiceNow’s Terms of Service and applicable usage policies.  
+
 
 <span style="color:#6f42c1"><strong>OpenAI® Notice</strong></span>  
 This project uses the OpenAI API. OpenAI and ChatGPT are trademarks of OpenAI. This project is <strong>not affiliated with or endorsed by OpenAI</strong>. All API usage must comply with OpenAI's Terms of Use.
+
 
 <span style="color:#6f42c1"><strong>GlideRecordSecure Notice</strong></span>  
 This project does not utilize `GlideRecordSecure`, and therefore does not enforce full ACL-based access controls. Data access in scripts assumes a trusted and sandboxed development environment, and may not meet ServiceNow security best practices.

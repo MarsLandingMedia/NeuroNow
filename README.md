@@ -1,6 +1,6 @@
 # NeuroNow
 
-NeuroNow is a conversational AI integration for ServiceNow, powered by OpenAI’s Assistants API. It enables developers and admins to interact with ServiceNow through natural language to automate processes, query data, build content, and populate records.
+NeuroNow is a conversational AI integration for ServiceNow, powered by OpenAI’s API. It enables developers and admins to interact with ServiceNow through natural language to automate processes, query data, build content, and populate records.
 
 ---
 

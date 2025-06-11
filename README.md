@@ -127,7 +127,7 @@ Additional content such as:
 - Predefined tools and assistant JSON
 - Sample system prompts
 - Global Script Include `ScopedAppUtil`
-- Fix scripts to reset portal threads
+- ServiceNow skills records to match the OpenAi tools/functions.
 
 Available in a separate repository:  
 **[NeuroNow Extras Repository](https://github.com/your-org/neuronow-extras)**

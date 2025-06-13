@@ -1,16 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<unload unload_date="2025-06-05 16:19:55">
-<sys_script_include action="INSERT_OR_UPDATE">
-<access>public</access>
-<active>true</active>
-<api_name>x_neuronow.gpt</api_name>
-<caller_access/>
-<client_callable>false</client_callable>
-<description/>
-<mobile_callable>false</mobile_callable>
-<name>gpt</name>
-<sandbox_callable>false</sandbox_callable>
-<script><![CDATA[var gpt = Class.create();
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>x_neuronow.gpt</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <mobile_callable>false</mobile_callable>
+        <name>gpt</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var gpt = Class.create();
 gpt.prototype = {
 
     initialize: function() {
@@ -230,8 +229,7 @@ gpt.prototype = {
                 msg: msg,
                 conversationId: conversationId,
                 threadId: this.threadId
-            }),
-            this.apiKey
+            })
         );
 
         return {
@@ -535,17 +533,17 @@ gpt.prototype = {
 
     type: 'gpt'
 };]]></script>
-<sys_class_name>sys_script_include</sys_class_name>
-<sys_created_by>admin</sys_created_by>
-<sys_created_on>2024-11-22 01:06:44</sys_created_on>
-<sys_id>5ff1ea0d838ed2104af4f065eeaad36e</sys_id>
-<sys_mod_count>95</sys_mod_count>
-<sys_name>gpt</sys_name>
-<sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
-<sys_policy>read</sys_policy>
-<sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
-<sys_update_name>sys_script_include_5ff1ea0d838ed2104af4f065eeaad36e</sys_update_name>
-<sys_updated_by>jdeluna</sys_updated_by>
-<sys_updated_on>2025-06-05 04:52:17</sys_updated_on>
-</sys_script_include>
-</unload>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2024-11-22 01:06:44</sys_created_on>
+        <sys_id>5ff1ea0d838ed2104af4f065eeaad36e</sys_id>
+        <sys_mod_count>96</sys_mod_count>
+        <sys_name>gpt</sys_name>
+        <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
+        <sys_update_name>sys_script_include_5ff1ea0d838ed2104af4f065eeaad36e</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-06-13 03:28:37</sys_updated_on>
+    </sys_script_include>
+</record_update>

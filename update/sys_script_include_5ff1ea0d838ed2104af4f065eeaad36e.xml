@@ -230,8 +230,7 @@ gpt.prototype = {
                 msg: msg,
                 conversationId: conversationId,
                 threadId: this.threadId
-            }),
-            this.apiKey
+            })
         );
 
         return {

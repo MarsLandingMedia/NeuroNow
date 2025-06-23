@@ -315,7 +315,7 @@ gpt.prototype = {
             this.runId = runId;
         }
 
-        return this._callAndCheckStatus();;
+        return this._callAndCheckStatus();
 
     },
 

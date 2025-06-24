@@ -224,7 +224,7 @@ The object is processed in the corresponding ServiceNow skills function like so:
 ## Disclaimers
 
 <span style="color:#0366d6"><strong>Legal and Use Notice</strong></span>  
-This project is licensed under the <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GNU General Public License v3.0</a> and is a product of <strong>Mars Landing Media LLC</strong>. It is provided <em>solely for demonstration and educational purposes</em>.  
+This project is licensed under the <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GNU Affero General Public License</a> and is a product of <strong>Mars Landing Media LLC</strong>. It is provided <em>solely for demonstration and educational purposes</em>.  
 
 No warranties, maintenance, or official support of any kind are provided. Mars Landing Media LLC assumes no responsibility for any damages, loss of data, or operational disruption resulting from incorrect, inappropriate, or enterprise use of this product or any part of it.  
 This code is not production-ready and may contain errors or incomplete logic. It is intended to serve as a reference or starting point only. Use this solution at your own risk.

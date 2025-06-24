@@ -20,10 +20,7 @@
         <sys_updated_by>admin</sys_updated_by>
         <sys_updated_on>2025-06-24 08:54:47</sys_updated_on>
         <type>password</type>
-        <value>{{gpaes}}D5JwM6ocNRPiwX+4D3JfA8FCUaAecvq0qw7Lx641zr1D8opQi6nmjgE3jZ4WVDRE+aLlQbDIZ834&#13;
-tun+KfFDldvdDqy51LHkiUO+zOEobpcpoGVoFvctqQCkv8InopZUQ9Ssgr/zbk4P3SUJzlo6H393&#13;
-nfFEx3EbkBz/JdX45QgLmJjLPBOt2HUbBdo/L/W7jrmGUyY9AWu28Grjw7gDhIMT8dD/No3gGo39&#13;
-vlLgyFA=</value>
+        <value></value>
         <write_roles/>
     </sys_properties>
     <sys_translated_text action="delete_multiple" query="documentkey=4a87bd59834612108478c730ceaad365"/>

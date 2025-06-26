@@ -84,6 +84,8 @@ NeuroNow connects ServiceNow to OpenAI's Assistants using a structured tool-exec
 
 (Installation video includes NeuroNow and NeuroNow Extras)
 
+*Tip: Ctrl+Click to open in a new tab!*
+
 ### Step 1: Import the Application
 
 - Install NeuroNow by cloning this repository into a ServiceNow scoped app.

@@ -1,157 +1,163 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
-    <sp_widget action="INSERT_OR_UPDATE">
-        <category>custom</category>
-        <client_script><![CDATA[api.controller = function($scope, $http, spUtil, $sce, $timeout) {
-    // Widget controller
-	
-    var c = this;
-    localStorage.removeItem('conversationId');
-    localStorage.removeItem('conversationThreadId');
+<sp_widget action="INSERT_OR_UPDATE">
+<category>custom</category>
+<client_script><![CDATA[api.controller = function($scope, $http, spUtil, $sce, $timeout) {
 
-    c.conversation = $scope.data.conversation;
-    c.conversationThread = $scope.data.thread;
-    c.agentName = $scope.data.agentName.toUpperCase();
-    c.userFullName = $scope.data.userFullName.toUpperCase();
-    c.userName = $scope.data.userName.toUpperCase();
+var c = this;
 
-    c.currentConversation = checkAndSetConversationId();
-    c.currentConversationThread = checkAndSetConversationThreadId();
+localStorage.removeItem('conversationId');
+localStorage.removeItem('conversationThreadId');
 
-    // Resets the chat input field
-    c.chatInputReset = function () {
-        $('#chat-input').val('').focus().blur().css('height', '48px');
-    };
+c.conversation = $scope.data.conversation;
+c.conversationThread = $scope.data.thread;
+c.agentName = $scope.data.agentName.toUpperCase();
+c.userFullName = $scope.data.userFullName.toUpperCase();
+c.userName = $scope.data.userName.toUpperCase();
 
-    // Creates a new conversation thread
-    c.createThread = function() {
-        c.data.action = 'createThread';
-        c.data.frmInput = c.userInput;
-        c.data.conversationId = c.currentConversation;
-        c.data.conversationThreadId = c.currentConversationThread;
-        c.userInput = '';
-        c.chatInputReset();
-        if (c.data.frmInput && c.data.frmInput !== '') {
-            c.server.update().then(function(response) {
-                localStorage.setItem('conversationThreadId', response.getNewestThreadId);
-            });
-        }
-    };
+c.currentConversation = checkAndSetConversationId();
+c.currentConversationThread = checkAndSetConversationThreadId();
 
-    // Record watcher setup for new user messages
-    var rcdWatchQuery1 = 'conversation_id=' + c.currentConversation + "^role=user";
-    spUtil.recordWatch($scope, "x_neuronow_openai_conversation_message", rcdWatchQuery1, function(name){
-        c.pullThreads();
-    });
-
-    // Record watcher setup for new assistant messages
-    var rcdWatchQuery2 = 'conversation_id=' + c.currentConversation + "^role=assistant";
-    spUtil.recordWatch($scope, "x_neuronow_openai_conversation_message", rcdWatchQuery2, function(name){
-        c.pullThreads();
-    });
-
-    // Retrieves and processes conversation threads
-    c.pullThreads = function() {
-        c.data.action = 'pullThread';
-        c.data.currentConversation = c.currentConversation;
-        c.server.update().then(function(response) {
-            var conversationThreads = response.conversationThreads.map(function(thread) {
-                return {
-                    role: thread.role,
-                    escMsg: $sce.trustAsHtml(renderMarkdown(thread.message)),
-                    date: thread.date.substr(0, thread.date.lastIndexOf(":"))
-                };
-            });
-            c.responseText = conversationThreads;
-            c.userInput = '';
-
-            // Post-DOM update: highlight code and tables after render
-            $timeout(function() {
-                if (window.Prism) window.Prism.highlightAll();
-            }, 100);
-
-            // Scroll to bottom
-            $('#response-feed').animate({
-                scrollTop: $("#response-feed")[0].scrollHeight
-            }, 500);
-        });
-    };
-
-    /**
-     * Converts Markdown to HTML using marked.js, with Prism code highlighting.
-     * @param {string} content - The Markdown string.
-     * @returns {string} HTML
-     */
-    function renderMarkdown(content) {
-        if (window.marked && typeof window.marked.parse === 'function') {
-            window.marked.setOptions({
-                breaks: true, // Enable GFM line breaks
-                highlight: function(code, lang) {
-                    if (window.Prism && Prism.languages[lang]) {
-                        return Prism.highlight(code, Prism.languages[lang], lang);
-                    }
-                    // Fallback: escape HTML
-                    return code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                }
-            });
-            return window.marked.parse(content || '');
-        }
-        // Fallback: treat as plain text
-        return content ? content.replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
-    }
-
-    /**
-     * Retrieves and sets the current conversation ID
-     */
-    function checkAndSetConversationId() {
-        var conversationId = c.conversation ? c.conversation : localStorage.getItem('conversationId');
-        if (c.conversation) localStorage.setItem('conversationId', conversationId);
-        return conversationId;
-    }
-
-    /**
-     * Retrieves and sets the current conversation thread ID
-     */
-    function checkAndSetConversationThreadId() {
-        var conversationThreadId = c.conversationThread ? c.conversationThread : localStorage.getItem('conversationThreadId');
-        if (c.conversationThread) localStorage.setItem('conversationThreadId', conversationThreadId);
-        return conversationThreadId;
-    }
-
-    /**
-     * Capitalizes the first letter of each word in a string
-     */
-    function capitalizeWords(str) {
-        return str.split(' ').map(function(word) {
-            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-        }).join(' ');
-    }
-
-    c.pullThreads();
-
-    // Materialize active label handling
-    $(document).ready(function() {
-        $("textarea").focus(function() {
-            $('#chat-input-text').addClass("active");
-        });
-        $("textarea").blur(function() {
-            if ($(this).val().trim() === "") {
-                $('#chat-input-text').removeClass("active");
-            } else {
-                $('#chat-input-text').addClass("active");
-            }
-        });
-        $("textarea").each(function() {
-            if ($(this).val().trim() !== "") {
-                $('#chat-input-text').addClass("active");
-            }
-        });
-    });
+// Resets the chat input field
+c.chatInputReset = function () {
+	$('#chat-input').val('').focus().blur().css('height', '48px');
 };
 
+// Creates a new conversation thread
+c.createThread = function() {
+	c.data.action = 'createThread';
+	c.data.frmInput = c.userInput;
+	c.data.conversationId = c.currentConversation;
+	c.data.conversationThreadId = c.currentConversationThread;
+	c.userInput = '';
+	c.chatInputReset();
+	if (c.data.frmInput && c.data.frmInput !== '') {
+		c.server.update().then(function(response) {
+			localStorage.setItem('conversationThreadId', response.getNewestThreadId);
+		});
+	}
+};
+
+// Record watcher setup for new user messages
+var rcdWatchQuery1 = 'conversation_id=' + c.currentConversation + "^role=user";
+spUtil.recordWatch($scope, "x_neuronow_openai_conversation_message", rcdWatchQuery1, function(name){
+	c.pullThreads();
+});
+
+// Record watcher setup for new assistant messages
+var rcdWatchQuery2 = 'conversation_id=' + c.currentConversation + "^role=assistant";
+spUtil.recordWatch($scope, "x_neuronow_openai_conversation_message", rcdWatchQuery2, function(name){
+	c.pullThreads();
+});
+
+// Retrieves and processes conversation threads
+c.pullThreads = function() {
+	c.data.action = 'pullThread';
+	c.data.currentConversation = c.currentConversation;
+	c.server.update().then(function(response) {
+		var conversationThreads = response.conversationThreads.map(function(thread) {
+			return {
+				role: thread.role,
+				escMsg: $sce.trustAsHtml(renderMarkdown(thread.message)),
+				date: thread.date.substr(0, thread.date.lastIndexOf(":"))
+			};
+		});
+		c.responseText = conversationThreads;
+		c.userInput = '';
+
+		// Post-DOM update: highlight code and tables after render
+		$timeout(function() {
+			if (window.Prism) window.Prism.highlightAll();
+			// Scroll to bottom (repeat in a short timeout to be safe)
+			$timeout(function() {
+				var feed = document.getElementById('response-feed');
+				if (feed) {
+					feed.scrollTop = feed.scrollHeight;
+				}
+			}, 0);
+
+		}, 100);
+
+	});
+};
+
+/**
+* Converts Markdown to HTML using marked.js, with Prism code highlighting.
+* @param {string} content - The Markdown string.
+* @returns {string} HTML
+*/
+function renderMarkdown(content) {
+	if (window.marked && typeof window.marked.parse === 'function') {
+		window.marked.setOptions({
+			breaks: true, // Enable GFM line breaks
+			highlight: function(code, lang) {
+				if (window.Prism && Prism.languages[lang]) {
+					return Prism.highlight(code, Prism.languages[lang], lang);
+				}
+				// Fallback: escape HTML
+				return code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+			}
+		});
+		return window.marked.parse(content || '');
+	}
+	// Fallback: treat as plain text
+	return content ? content.replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
+}
+
+/**
+* Retrieves and sets the current conversation ID
+*/
+function checkAndSetConversationId() {
+	var conversationId = c.conversation ? c.conversation : localStorage.getItem('conversationId');
+	if (c.conversation) localStorage.setItem('conversationId', conversationId);
+	return conversationId;
+}
+
+/**
+* Retrieves and sets the current conversation thread ID
+*/
+function checkAndSetConversationThreadId() {
+	var conversationThreadId = c.conversationThread ? c.conversationThread : localStorage.getItem('conversationThreadId');
+	if (c.conversationThread) localStorage.setItem('conversationThreadId', conversationThreadId);
+	return conversationThreadId;
+}
+
+/**
+* Capitalizes the first letter of each word in a string
+*/
+function capitalizeWords(str) {
+	return str.split(' ').map(function(word) {
+		return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+	}).join(' ');
+}
+
+
+//c.pullThreads();
+
+
+// Materialize active label handling
+$(document).ready(function() {
+	$("textarea").focus(function() {
+		$('#chat-input-text').addClass("active");
+	});
+	$("textarea").blur(function() {
+		if ($(this).val().trim() === "") {
+			$('#chat-input-text').removeClass("active");
+		} else {
+			$('#chat-input-text').addClass("active");
+		}
+	});
+	$("textarea").each(function() {
+		if ($(this).val().trim() !== "") {
+			$('#chat-input-text').addClass("active");
+		}
+	});
+});
+
+};
 
 ]]></client_script>
-        <controller_as>c</controller_as>
-        <css>/* Mars theme variables */
+<controller_as>c</controller_as>
+<css>/* Mars theme variables */
 $marsRed: #bb2222;
 $cardDark: #232323;
 $backgroundColor: #0f0f0f;
@@ -160,103 +166,103 @@ $greyWhite: #cccccc;
 
 /* LOGO */
 img#marsLandingLogo {
-  width: 26%;
-  max-width: 150px !important;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+width: 26%;
+max-width: 150px !important;
+display: block;
+margin-left: auto;
+margin-right: auto;
 }
 
 
 
 .custom-title {
-  font-family: 'Mars', Arial, sans-serif;
-  font-weight: normal; /* Or bold if you defined a bold face */
+font-family: 'Mars', Arial, sans-serif;
+font-weight: normal; /* Or bold if you defined a bold face */
 }
 
 /* Send button and icon */
 #chat-submit {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 !important;
-  height: 36px;
-  width: 40px;
-  border-radius: 8px !important;
-  background-color: #232323 !important;
-  color: #fff !important;
-  border: none !important;
-  box-shadow: none !important;
-  font-size: 1em;
-  transition: background 0.2s;
+display: flex !important;
+align-items: center !important;
+justify-content: center !important;
+padding: 0 !important;
+height: 36px;
+width: 40px;
+border-radius: 8px !important;
+background-color: #232323 !important;
+color: #fff !important;
+border: none !important;
+box-shadow: none !important;
+font-size: 1em;
+transition: background 0.2s;
 }
 
 #chat-submit:hover,
 #chat-submit:focus {
-  background-color: #bb2222 !important;
-  color: #fff !important;
+background-color: #bb2222 !important;
+color: #fff !important;
 }
 
 #chat-submit .material-icons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2em !important;
-  line-height: 1 !important;
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.2em !important;
+line-height: 1 !important;
+height: 100%;
+width: 100%;
+margin: 0;
+padding: 0;
 }
 
 /* Fine Mars-red underline on chat input */
 #chat-input,
 #chat-input:focus {
-  font-size: large;
-  color: #f0f0f0 !important;
-  border-bottom: 1px solid #bb2222 !important;
-  box-shadow: none !important;
-  background-color: transparent !important;
+font-size: large;
+color: #f0f0f0 !important;
+border-bottom: 1px solid #bb2222 !important;
+box-shadow: none !important;
+background-color: transparent !important;
 }
 
 #chat-input::placeholder {
-  color: #888 !important;
-  opacity: 1;
+color: #888 !important;
+opacity: 1;
 }
 
 /* General theme */
 .widget-title {
-  text-align: center !important;
-  font-size: 1.5em !important;
-  margin-bottom: 1em !important;
+text-align: center !important;
+font-size: 1.5em !important;
+margin-bottom: 1em !important;
 }
 
 /* --- Card panels --- */
 .card-panel {
-  background-color: #232323 !important;
-  color: #ffffff !important;
-  border-radius: 8px !important;
-  padding: 1em !important;
-  margin-bottom: 0.7em !important;
+background-color: #232323 !important;
+color: #ffffff !important;
+border-radius: 8px !important;
+padding: 1em !important;
+margin-bottom: 0.7em !important;
 }
 .transparent-card {
-  background-color: transparent !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
+background-color: transparent !important;
+box-shadow: none !important;
+border-radius: 0 !important;
 }
 .card-panel + .card-panel {
-  margin-top: 0 !important;
+margin-top: 0 !important;
 }
 
 /* --- Main chat response text normalization --- */
 .response-text {
-  color: #fff !important;
-  font-size: .85em;
-  line-height: 1.32;
-  padding: 0 !important;
-  margin: 0 !important;
-  word-break: break-word;
-  white-space: normal !important;
+color: #fff !important;
+font-size: .85em;
+line-height: 1.32;
+padding: 0 !important;
+margin: 0 !important;
+word-break: break-word;
+white-space: normal !important;
 }
 
 /* Remove excess margin/padding from markdown block elements */
@@ -265,8 +271,8 @@ img#marsLandingLogo {
 .response-text ol,
 .response-text blockquote,
 .response-text table {
-  margin: 0.18em 0 0.18em 0;
-  padding: 0;
+margin: 0.18em 0 0.18em 0;
+padding: 0;
 }
 
 /* Tighter and normalized heading spacing/sizing */
@@ -276,10 +282,10 @@ img#marsLandingLogo {
 .response-text h4,
 .response-text h5,
 .response-text h6 {
-  font-weight: 700;
-  color: #fff;
-  margin: 0.3em 0 0.18em 0;
-  line-height: 1.13;
+font-weight: 700;
+color: #fff;
+margin: 0.3em 0 0.18em 0;
+line-height: 1.13;
 }
 .response-text h1 { font-size: 1.13em; }
 .response-text h2 { font-size: 1.09em; }
@@ -291,385 +297,417 @@ img#marsLandingLogo {
 /* Tighten list and item spacing */
 .response-text ul,
 .response-text ol {
-  padding-left: 1.25em;
-  margin: 0.15em 0;
+padding-left: 1.25em;
+margin: 0.15em 0;
 }
 .response-text li {
-  margin-bottom: 0.09em;
+margin-bottom: 0.09em;
 }
 
 /* Tighter blockquote */
 .response-text blockquote {
-  padding: 0.36em 0.9em;
-  margin: 0.18em 0;
-  background: #171717;
-  border-left: 3px solid #bb2222;
-  color: #ccc;
-  font-style: italic;
-  line-height: 1.20;
+padding: 0.36em 0.9em;
+margin: 0.18em 0;
+background: #171717;
+border-left: 3px solid #bb2222;
+color: #ccc;
+font-style: italic;
+line-height: 1.20;
 }
 
 /* Table normalization for markdown tables */
 .response-text table {
-  border-collapse: collapse;
-  width: auto;
-  background: #181818;
-  color: #eee;
-  font-size: 0.97em;
-  margin: 0.28em 0;
+border-collapse: collapse;
+width: auto;
+background: #181818;
+color: #eee;
+font-size: 0.97em;
+margin: 0.28em 0;
 }
 .response-text th, .response-text td {
-  border: 1px solid #333;
-  padding: 0.25em 0.7em;
+border: 1px solid #333;
+padding: 0.25em 0.7em;
 }
 .response-text th {
-  background: #222;
-  color: #fff;
-  font-weight: 700;
+background: #222;
+color: #fff;
+font-weight: 700;
 }
 .response-text tr:nth-child(even) {
-  background: #191919;
+background: #191919;
 }
 
 /* --- User &amp; time meta --- */
 .msg-owner-text,
 .msg-owner-dt-text {
-  color: #cccccc !important;
+color: #cccccc !important;
 }
 .msg-owner {
-  color: #cccccc !important;
-  font-size: .75em !important;
+color: #cccccc !important;
+font-size: .75em !important;
 }
 
 /* Slight indent for non-transparent card responses */
 div.card-panel:not(.transparent-card) .response-text {
-  padding-left: 10px !important;
+padding-left: 10px !important;
 }
 
 #chat-input-text,
 label[for="chat-input"] {
-  font-weight: 900;
-  font-size: .85em !important;
-  display: block !important;
-  width: 100% !important;
-  text-align: left !important;
-  margin-bottom: 10px !important;
-  //padding-left: 0 !important;
-  padding: 5px !important;
-  color: #fff !important;
+font-weight: 900;
+font-size: .85em !important;
+display: block !important;
+width: 100% !important;
+text-align: left !important;
+margin-bottom: 10px !important;
+//padding-left: 0 !important;
+padding: 5px !important;
+color: #fff !important;
 }
 
 
 /* --- Responsive tweaks for chat on mobile --- */
 @media (max-width: 768px) {
-  .row.chat-focus-column,
-  .chat-input-group.input-field,
-  .col.s11,
-  .col.s1,
-  form.col.m12 {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 100% !important;
-    box-sizing: border-box !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-  }
-  #chat-input,
-  textarea#chat-input {
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    border-bottom: 1px solid #bb2222 !important;
-    margin: 0 !important;
-    padding: 4px 0 4px 0 !important;
-    background: transparent !important;
-    color: #f0f0f0 !important;
-    display: block !important;
-  }
-  #chat-input-text,
-  label[for="chat-input"] {
-    font-weight: 900;
-    font-size: .85em !important;
-    display: block !important;
-    width: 100% !important;
-    text-align: center !important;
-    //margin-left: 0 !important;
-    //padding-left: 0 !important;
-    padding: 5px !important;
-    color: #fff !important;
-  }
-  #chat-submit {
-    width: 100% !important;
-    min-width: 100% !important;
-    max-width: 100% !important;
-    height: 44px !important;
-    margin: 14px 0 0 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border-radius: 8px !important;
-    background: #232323 !important;
-    color: #fff !important;
-    font-size: 1.1em !important;
-  }
-  #chat-submit .material-icons {
-    font-size: 1.2em !important;
-    line-height: 1 !important;
-  }
-  .col.s1, .col.s11 {
-    width: 100% !important;
-    max-width: 100% !important;
-    flex: none !important;
-    padding: 0 !important;
-  }
-  img#marsLandingLogo {
-    display: block;
-    margin: 18px auto 0 auto !important;
-    width: 50%;
-  }
+.row.chat-focus-column,
+.chat-input-group.input-field,
+.col.s11,
+.col.s1,
+form.col.m12 {
+width: 100% !important;
+max-width: 100% !important;
+min-width: 100% !important;
+box-sizing: border-box !important;
+margin: 0 !important;
+padding: 0 !important;
+display: block !important;
+}
+#chat-input,
+textarea#chat-input {
+width: 100% !important;
+min-width: 0 !important;
+max-width: 100% !important;
+box-sizing: border-box !important;
+border-bottom: 1px solid #bb2222 !important;
+margin: 0 !important;
+padding: 4px 0 4px 0 !important;
+background: transparent !important;
+color: #f0f0f0 !important;
+display: block !important;
+}
+#chat-input-text,
+label[for="chat-input"] {
+font-weight: 900;
+font-size: .85em !important;
+display: block !important;
+width: 100% !important;
+text-align: center !important;
+//margin-left: 0 !important;
+//padding-left: 0 !important;
+padding: 5px !important;
+color: #fff !important;
+}
+#chat-submit {
+width: 100% !important;
+min-width: 100% !important;
+max-width: 100% !important;
+height: 44px !important;
+margin: 14px 0 0 0 !important;
+display: flex !important;
+align-items: center !important;
+justify-content: center !important;
+border-radius: 8px !important;
+background: #232323 !important;
+color: #fff !important;
+font-size: 1.1em !important;
+}
+#chat-submit .material-icons {
+font-size: 1.2em !important;
+line-height: 1 !important;
+}
+.col.s1, .col.s11 {
+width: 100% !important;
+max-width: 100% !important;
+flex: none !important;
+padding: 0 !important;
+}
+img#marsLandingLogo {
+display: block;
+margin: 18px auto 0 auto !important;
+width: 50%;
+}
 
-  .response-text {
-    font-size: .85em !important;
-  }
+.response-text {
+font-size: .85em !important;
+}
 
-  div.card-panel:not(.transparent-card) .response-text{ 
-       padding-left: 0px !important;
-       margin-left: 0 !important;
-    p {
-       padding-left: 0px !important;
-       margin-left: 0 !important;
-       margin-top: 5px !important;
-    }
-  }
+div.card-panel:not(.transparent-card) .response-text{ 
+padding-left: 0px !important;
+margin-left: 0 !important;
+p {
+padding-left: 0px !important;
+margin-left: 0 !important;
+margin-top: 5px !important;
+}
+}
 
 }
 
 /* Scrollable chat feed area */
 #response-feed {
-  max-height: 55vh;
-  min-height: 120px;
-  overflow-y: auto;
-  padding-right: 8px;
-  margin-bottom: 12px;
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: #bb2222 #232323;
+max-height: 55vh;
+min-height: 120px;
+overflow-y: auto;
+padding-right: 8px;
+margin-bottom: 12px;
+scroll-behavior: smooth;
+scrollbar-width: thin;
+scrollbar-color: #bb2222 #232323;
 }
 #response-feed::-webkit-scrollbar {
-  width: 8px;
+width: 8px;
 }
 #response-feed::-webkit-scrollbar-thumb {
-  background: #bb2222;
-  border-radius: 8px;
+background: #bb2222;
+border-radius: 8px;
 }
 #response-feed::-webkit-scrollbar-track {
-  background: #232323;
-  border-radius: 8px;
+background: #232323;
+border-radius: 8px;
 }
 
 
 
 /* Indent user response card-panels only (NOT .transparent-card) */
 .card-panel:not(.transparent-card) {
-  p {
-    margin-left: 15px !important;   /* Indent user (left-side) bubble */
-    margin-top: -15px !important;
-    margin-right: 0 !important;
-    margin-bottom: 0 !important; /* Reduce gap below user bubble */
-  }
+p {
+margin-left: 15px !important;   /* Indent user (left-side) bubble */
+margin-top: -15px !important;
+margin-right: 0 !important;
+margin-bottom: 0 !important; /* Reduce gap below user bubble */
+}
 }
 
 /* Remove indent for assistant */
 .card-panel.transparent-card {
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  margin-bottom: 0.5em !important;
+margin-left: 0 !important;
+margin-right: 0 !important;
+margin-bottom: 0.5em !important;
 }
 
 code {
-  font-size: .7em !important;
-  font-style: italic !important;
+font-size: .7em !important;
+font-style: italic !important;
 }
 
 /* Copyright at bottom */
 .mars-copyright {
-  text-align: center;
-  font-size: 0.45em;
-  color: #cccccc;
-  margin-top: 0px;
-  margin-bottom: 0;
-  letter-spacing: 0.01em;
-  font-weight: 400;
+text-align: center;
+font-size: 0.45em;
+color: #cccccc;
+margin-top: 0px;
+margin-bottom: 0;
+letter-spacing: 0.01em;
+font-weight: 400;
 }
 </css>
-        <data_table>sp_instance</data_table>
-        <demo_data/>
-        <description/>
-        <docs/>
-        <field_list/>
-        <has_preview>true</has_preview>
-        <id>gpt-module</id>
-        <internal>false</internal>
-        <link><![CDATA[function link(scope, element, attrs, controller) {  
+<data_table>sp_instance</data_table>
+<demo_data/>
+<description/>
+<docs/>
+<field_list/>
+<has_preview>true</has_preview>
+<id>gpt-module</id>
+<internal>false</internal>
+<link><![CDATA[function link(scope, element, attrs, controller) {  
+
+scope.readyLoad = false;
+
+// Helper: Promise-based JS loader
+function loadExternalScript(url) {
+	return new Promise(function(resolve, reject) {
+		var script = document.createElement('script');
+		script.type = 'application/javascript';
+		script.src = url;
+		script.onload = resolve;
+		script.onerror = reject;
+		document.head.appendChild(script);
+		//document.body.appendChild(script); // Use body instead!
+	});
+}
+
+// Helper: CSS loader (CSS loads asynchronously, so no promise needed for order)
+function loadExternalCSS(url) {
+	var link = document.createElement('link');
+	link.rel = 'stylesheet';
+	link.href = url;
+	document.head.appendChild(link);
+}
+
+// --- Load all CSS up front ---
+loadExternalCSS('/7291f0498386d2104af4f065eeaad31e.spcssdbx');      // Prism core CSS
+loadExternalCSS('/baa1f0498386d2104af4f065eeaad325.spcssdbx');      // Prism toolbar CSS
+
+// --- Load JS scripts in order ---
+//loadExternalScript('/api/x_fuegofs/service?/neuronow/scripts/markdown.js') // Format when using FuegoFS
+loadExternalScript('https://cdnjs.cloudflare.com/ajax/libs/marked/16.0.0/lib/marked.umd.js')
+//loadExternalScript('https://cdnjs.cloudflare.com/ajax/libs/marked/15.0.12/marked.min.js')
+//loadExternalScript('/x_neuronow.markdownJS.jsdbx')// This does NOT WORK.
+	.then(function() {
+	return loadExternalScript('/x_neuronow.prismJS.jsdbx');         // Prism core
+})
+	.then(function() {
+	return loadExternalScript('/x_neuronow.prismToolBarJS.jsdbx');  // Prism toolbar
+})
+	.then(function() {
+	return loadExternalScript('/x_neuronow.prismCopyJS.jsdbx');     // Prism copy
+})
+	.then(function() {
+	return loadExternalScript('/x_neuronow.prismLanguageJS.jsdbx'); // Prism show language
+})
+	.then(function() {
+	// All scripts are loaded! Put your dependent code here
+	console.log('All scripts loaded!');
+})
+	.catch(function(err) {
+	console.error('A script failed to load:', err);
+});
 
 
+setTimeout(function(){
+	scope.readyLoad = true;
+	ctrl.pullThreads();
+	scope.$applyAsync(); // Ensures digest cycle
+},500)
 
 }]]></link>
-        <name>GPT Module</name>
-        <option_schema/>
-        <public>false</public>
-        <roles/>
-        <script><![CDATA[(function() {
+<name>GPT Module</name>
+<option_schema/>
+<public>false</public>
+<roles/>
+<script><![CDATA[(function() {
 
-	var currentUserDetails = getCurrentUserDetails();
+var currentUserDetails = getCurrentUserDetails();
 
-  data.agentName = gs.getProperty('x_neuronow.gpt.openai.agent.name');
-	data.portalTitle = gs.getProperty('x_neuronow.gpt.portal.title');
-	data.chatInputPlaceHolder = gs.getProperty('x_neuronow.gpt.chat.input.placeholder');
-		
-	var currUserSysId = currentUserDetails.sysID;
-	data.userName = currentUserDetails.firstName;
-	data.userFullName = currentUserDetails.fullName;
-	var gpt = new x_neuronow.gpt();
-
-	var conversations = gpt.getUserConversations(currUserSysId);
-	var primaryConversation = conversations[0];
+data.agentName = gs.getProperty('x_neuronow.gpt.openai.agent.name');
+data.portalTitle = gs.getProperty('x_neuronow.gpt.portal.title');
+data.chatInputPlaceHolder = gs.getProperty('x_neuronow.gpt.chat.input.placeholder');
 	
-	data.conversation = primaryConversation.conversationId;
-	data.thread = primaryConversation.threadId;
+var currUserSysId = currentUserDetails.sysID;
+data.userName = currentUserDetails.firstName;
+data.userFullName = currentUserDetails.fullName;
+var gpt = new x_neuronow.gpt();
 
-	if (input && input.action == 'createThread') {			  
-		var frmInput = input.frmInput;
-		var conversationId = data.conversation;
-		var conversationThreadId = data.thread;
-		gpt.createThread(frmInput,conversationId,conversationThreadId);
-		data.getNewestThreadId = gpt._getThreadIdByConversationId(conversationId);
-		return data;
-	}
+var conversations = gpt.getUserConversations(currUserSysId);
+var primaryConversation = conversations[0];
+
+data.conversation = primaryConversation.conversationId;
+data.thread = primaryConversation.threadId;
+
+if (input && input.action == 'createThread') {			  
+	var frmInput = input.frmInput;
+	var conversationId = data.conversation;
+	var conversationThreadId = data.thread;
+	gpt.createThread(frmInput,conversationId,conversationThreadId);
+	data.getNewestThreadId = gpt._getThreadIdByConversationId(conversationId);
+	return data;
+}
 
 
-	if (input && input.action == 'pullThread') {			  
-		var currentConversation = input.currentConversation;
-		data.conversationThreads = gpt.currentConversationThreads(currentConversation);
-		return data;
-	}
+if (input && input.action == 'pullThread') {			  
+	var currentConversation = input.currentConversation;
+	data.conversationThreads = gpt.currentConversationThreads(currentConversation);
+	return data;
+}
 
 
-	function getCurrentUserDetails() {
-		
-		//scoped app method of getting current user data
-		var userSysId = gs.getUserID();
-		
-		var user = new GlideRecord('sys_user');
-		user.get(userSysId);
-		var userId = user.user_name.toString();
-		var userFirstName = user.first_name.toString();
-		var userLastName = user.last_name.toString();
-		var userFullName = userFirstName + ' ' + userLastName;
-		
-		var userDetails = {
-			userID: userId,   // Get the user ID (username)
-			fullName: userFullName, // Get the full name
-			firstName: userFirstName, // Get the first name
-			lastName: userLastName,   // Get the last name
-			sysID: userSysId // Get the unique identifier (sys_id)
-		};
+function getCurrentUserDetails() {
+	
+	//scoped app method of getting current user data
+	var userSysId = gs.getUserID();
+	
+	var user = new GlideRecord('sys_user');
+	user.get(userSysId);
+	var userId = user.user_name.toString();
+	var userFirstName = user.first_name.toString();
+	var userLastName = user.last_name.toString();
+	var userFullName = userFirstName + ' ' + userLastName;
+	
+	var userDetails = {
+		userID: userId,   // Get the user ID (username)
+		fullName: userFullName, // Get the full name
+		firstName: userFirstName, // Get the first name
+		lastName: userLastName,   // Get the last name
+		sysID: userSysId // Get the unique identifier (sys_id)
+	};
 
-		return userDetails;
-	}
+	return userDetails;
+}
 
 
 
 
 })();
 ]]></script>
-        <servicenow>false</servicenow>
-        <sys_class_name>sp_widget</sys_class_name>
-        <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2024-11-22 01:41:54</sys_created_on>
-        <sys_id>4c3a6e4583ced2104af4f065eeaad3c7</sys_id>
-        <sys_mod_count>300</sys_mod_count>
-        <sys_name>GPT Module</sys_name>
-        <sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
-        <sys_policy/>
-        <sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
-        <sys_update_name>sp_widget_4c3a6e4583ced2104af4f065eeaad3c7</sys_update_name>
-        <sys_updated_by>jdeluna</sys_updated_by>
-        <sys_updated_on>2025-06-24 08:29:44</sys_updated_on>
-        <template><![CDATA[<div class="widget-example chatgpt-widget">
+<servicenow>false</servicenow>
+<sys_class_name>sp_widget</sys_class_name>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2024-11-22 01:41:54</sys_created_on>
+<sys_id>4c3a6e4583ced2104af4f065eeaad3c7</sys_id>
+<sys_mod_count>300</sys_mod_count>
+<sys_name>GPT Module</sys_name>
+<sys_package display_value="NeuroNow" source="x_neuronow">5f95b97c834a5210223556e0deaad3b9</sys_package>
+<sys_policy/>
+<sys_scope display_value="NeuroNow">5f95b97c834a5210223556e0deaad3b9</sys_scope>
+<sys_update_name>sp_widget_4c3a6e4583ced2104af4f065eeaad3c7</sys_update_name>
+<sys_updated_by>jdeluna</sys_updated_by>
+<sys_updated_on>2025-06-24 08:29:44</sys_updated_on>
+<template><![CDATA[<div ng-if="readyLoad == true" class="widget-example chatgpt-widget">
+<h3 class="widget-title custom-title">{{data.portalTitle}}</h3>
 
-  <h3 class="widget-title custom-title">{{data.portalTitle}}</h3>
+<!-- Response Panel -->
+<div  id="response-feed" class="response-panel row chat-focus-column" ng-for="c.responseText && c.responseText.length > 0">
+<div id='it' class="col m12" ng-repeat="response in c.responseText">
+<div class="card-panel" ng-class="{'transparent-card':response.role=='ASSISTANT'}">
+<!-- Displaying the message -->
+<!-- <div ng-if="response.role=='ASSISTANT' || (response.role=='user' && (!c.userName || c.userName == ''))" class="msg-owner"><span class="msg-owner-text" ng-bind="c.agentName"></span></div> -->
+<div ng-if="response.role=='USER' && (c.userName && c.userName != '') " class="msg-owner" ng-class=''><span class="msg-owner-text" ng-bind="c.userFullName"></span></div>
+<!-- <div class="msg-owner-dt"><span class="msg-owner-dt-text" ng-bind="response.date"></span></div> -->
+<span class="response-text" ng-bind-html="response.escMsg"></span>
+</div>
+</div>
+</div>
 
-  <!-- Response Panel -->
-  <div  id="response-feed" class="response-panel row chat-focus-column" ng-for="c.responseText && c.responseText.length > 0">
-    <div id='it' class="col m12" ng-repeat="response in c.responseText">
-      <div class="card-panel" ng-class="{'transparent-card':response.role=='ASSISTANT'}">
-        <!-- Displaying the message -->
-        <!-- <div ng-if="response.role=='ASSISTANT' || (response.role=='user' && (!c.userName || c.userName == ''))" class="msg-owner"><span class="msg-owner-text" ng-bind="c.agentName"></span></div> -->
-        <div ng-if="response.role=='USER' && (c.userName && c.userName != '') " class="msg-owner" ng-class=''><span class="msg-owner-text" ng-bind="c.userFullName"></span></div>
-        <!-- <div class="msg-owner-dt"><span class="msg-owner-dt-text" ng-bind="response.date"></span></div> -->
-        <span class="response-text" ng-bind-html="response.escMsg"></span>
-      </div>
-    </div>
-  </div>
-
-  <div class="row chat-focus-column">
-    <form class="col m12">
-      <div class="row">
-        <div class="chat-input-group input-field col s11">
-          <textarea id="chat-input" class="materialize-textarea" ng-model="c.userInput"></textarea>
-          <label for="chat-input" id="chat-input-text" class="grey-text text-lighten-4">{{data.chatInputPlaceHolder}}</label>          
-        </div>
-        <div class="col s1">
-          <button id="chat-submit" class="btn pulse waves-effect waves-light btn-small" type="submit" name="action" ng-click="c.createThread()">
-            <i class="material-icons center">send</i>
-          </button>
-        </div>
-      </div>
-    </form>
-    <img id="marsLandingLogo" src="x_neuronow.mars_landing_logo.jpg"/>
-    <div class="mars-copyright">
-      &copy; 2025 Mars Landing Media LLC. All rights reserved.
-    </div>
-
-
-  </div>
-
-  <!-- Markdown  -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  
-  <!-- Prism JS -->
-  <script src="/x_neuronow.prismJS.jsdbx"></script>
-  <link rel="stylesheet" href="/7291f0498386d2104af4f065eeaad31e.spcssdbx">
-
-
-  <!-- Prism Toolbar -->
-  <script src="/x_neuronow.prismToolBarJS.jsdbx"></script>
-  <link rel="stylesheet" href="/baa1f0498386d2104af4f065eeaad325.spcssdbx">
-
-
-  <!-- Prism Copy - scripted CSS -->
-  <script src="/x_neuronow.prismCopyJS.jsdbx"></script>
-
-  <!-- Prism Show Language -->
-  <script src="/x_neuronow.prismLanguageJS.jsdbx"></script>
-
-
-  
+<div class="row chat-focus-column">
+<form class="col m12">
+<div class="row">
+<div class="chat-input-group input-field col s11">
+  <textarea id="chat-input" class="materialize-textarea" ng-model="c.userInput"></textarea>
+  <label for="chat-input" id="chat-input-text" class="grey-text text-lighten-4">{{data.chatInputPlaceHolder}}</label>          
+</div>
+<div class="col s1">
+  <button id="chat-submit" class="btn pulse waves-effect waves-light btn-small" type="submit" name="action" ng-click="c.createThread()">
+    <i class="material-icons center">send</i>
+  </button>
+</div>
+</div>
+</form>
+<img id="marsLandingLogo" src="x_neuronow.mars_landing_logo.jpg"/>
+<div class="mars-copyright">
+&copy; 2025 Mars Landing Media LLC. All rights reserved.
+</div>
+</div>  
 </div>
 ]]></template>
-    </sp_widget>
-    <sys_es_latest_script action="INSERT_OR_UPDATE">
-        <id>4c3a6e4583ced2104af4f065eeaad3c7</id>
-        <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2024-11-22 02:00:19</sys_created_on>
-        <sys_id>f96e2ec983ced2104af4f065eeaad3a2</sys_id>
-        <sys_mod_count>0</sys_mod_count>
-        <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2024-11-22 02:00:19</sys_updated_on>
-        <table>sp_widget</table>
-        <use_es_latest>true</use_es_latest>
-    </sys_es_latest_script>
+</sp_widget>
+<sys_es_latest_script action="INSERT_OR_UPDATE">
+<id>4c3a6e4583ced2104af4f065eeaad3c7</id>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2024-11-22 02:00:19</sys_created_on>
+<sys_id>f96e2ec983ced2104af4f065eeaad3a2</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2024-11-22 02:00:19</sys_updated_on>
+<table>sp_widget</table>
+<use_es_latest>true</use_es_latest>
+</sys_es_latest_script>
 </record_update>
